@@ -24,8 +24,18 @@ import { useAddAvailableStock } from "../hooks/use-available-stock";
 import { addStockSchema, STOCK_REASONS, STOCK_REASON_LABELS } from "../schemas";
 import type { StockReason } from "../schemas";
 
-export function AddStockSheet() {
-  const [open, setOpen] = useState(false);
+export function AddStockSheet({
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+} = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
+  const setOpen = controlledOnOpenChange ?? setInternalOpen;
+  const isControlled =
+    controlledOpen !== undefined && controlledOnOpenChange !== undefined;
   const [productId, setProductId] = useState("");
   const [variantId, setVariantId] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -78,7 +88,11 @@ export function AddStockSheet() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger render={<Button size="sm" />}>+ Add to Stock</SheetTrigger>
+      {!isControlled && (
+        <SheetTrigger render={<Button size="sm" />}>
+          + Add to Stock
+        </SheetTrigger>
+      )}
 
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>
