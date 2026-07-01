@@ -9,6 +9,22 @@ import { QuickActionsBar } from "./quick-actions-bar";
 import { ReadyPackingSection } from "./ready-packing-section";
 import { WaitingFactorySection } from "./waiting-factory-section";
 
+function TodayHeader() {
+  const date = new Date().toLocaleDateString(undefined, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  return (
+    <div className="px-4">
+      <h1 className="text-xl font-semibold">Today</h1>
+      <p className="text-sm text-muted-foreground">{date}</p>
+    </div>
+  );
+}
+
 export function TodayDashboard() {
   const { data, isLoading, error } = useTodaySnapshot();
 
@@ -28,13 +44,20 @@ export function TodayDashboard() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6 py-4">
+      <TodayHeader />
       <KpiStrip kpis={data.kpis} />
       <QuickActionsBar />
       <NeedsAttentionSection items={data.needs_attention} />
       <WaitingFactorySection orders={data.waiting_factory} />
-      <ReadyPackingSection customers={data.ready_packing} />
-      <OutDeliverySection deliveries={data.out_for_delivery} />
-      <DeliveredTodaySection deliveries={data.delivered_today} />
+      <div id="ready-packing">
+        <ReadyPackingSection customers={data.ready_packing} />
+      </div>
+      <div id="out-delivery">
+        <OutDeliverySection deliveries={data.out_for_delivery} />
+      </div>
+      <div id="delivered-today">
+        <DeliveredTodaySection deliveries={data.delivered_today} />
+      </div>
     </div>
   );
 }

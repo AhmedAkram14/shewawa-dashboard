@@ -45,11 +45,12 @@ export async function getMyProfile(client: Client): Promise<UserProfile> {
 
   const { data, error } = await client
     .from("users")
-    .select("id, full_name, email")
+    .select("id, full_name")
     .eq("id", user.id)
     .single();
   if (error) throw error;
-  return data as unknown as UserProfile;
+  const row = data as { id: string; full_name: string | null };
+  return { id: row.id, full_name: row.full_name, email: user.email ?? null };
 }
 
 export async function updateUserProfile(
