@@ -137,6 +137,13 @@ export function DeliveryDetail({ id }: { id: string }) {
       {/* Actions */}
       {!isTerminal && (
         <>
+          {updateStatus.error && (
+            <p className="text-sm text-destructive" role="alert">
+              {(updateStatus.error as { message?: string })?.message ??
+                "Failed to update status."}
+            </p>
+          )}
+
           {delivery.status === "pending" && (
             <Button
               className="w-full"
