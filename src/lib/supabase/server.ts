@@ -1,19 +1,20 @@
+import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 
+import type { Database } from "./database.types";
 import { env } from "@/lib/env";
-import { createServerClient } from "@supabase/ssr";
 
 /**
- * Returns a Supabase client for use in Server Components and Route Handlers.
- * Reads the user's session from the request cookie store.
- * All queries run under the user's JWT → Supabase RLS policies apply.
+ * Returns a typed Supabase client for use in Server Components and Route Handlers.
+ * Reads the session from the request cookie store.
+ * All queries run under the user's JWT — Supabase RLS policies apply.
  *
  * Must be called inside an async Server Component or Route Handler.
  */
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     env.NEXT_PUBLIC_SUPABASE_URL,
     env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
@@ -27,8 +28,8 @@ export async function createClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // setAll() called from a Server Component — the middleware
-            // already handles refreshing the session cookie on every request.
+            // Called from a Server Component — the middleware already refreshes
+            // the session cookie on every request, so this is safe to ignore.
           }
         },
       },
