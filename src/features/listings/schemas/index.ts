@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// ── Products ──────────────────────────────────────────────────────────────────
+// ── Catalog Products ──────────────────────────────────────────────────────────
 
 export const createProductSchema = z.object({
   name: z
@@ -20,7 +20,7 @@ export const updateProductSchema = createProductSchema.partial();
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 
-// ── Variants ──────────────────────────────────────────────────────────────────
+// ── Product Variants ──────────────────────────────────────────────────────────
 // Prices are integers (piastres/cents). Multiply EGP × 100 before submitting.
 
 export const createVariantSchema = z.object({
@@ -46,3 +46,58 @@ export const updateVariantSchema = createVariantSchema
 
 export type CreateVariantInput = z.infer<typeof createVariantSchema>;
 export type UpdateVariantInput = z.infer<typeof updateVariantSchema>;
+
+// ── Collections ───────────────────────────────────────────────────────────────
+
+export const createCollectionSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(100, "Name must be 100 characters or fewer"),
+});
+
+export const updateCollectionSchema = createCollectionSchema.partial();
+
+export type CreateCollectionInput = z.infer<typeof createCollectionSchema>;
+export type UpdateCollectionInput = z.infer<typeof updateCollectionSchema>;
+
+// ── Listings ──────────────────────────────────────────────────────────────────
+
+export type ListingStatus =
+  | "collecting"
+  | "decision"
+  | "ordered"
+  | "receiving"
+  | "ready_for_packing"
+  | "reconciled"
+  | "cancelled";
+
+export type ListingAction =
+  | "end_collecting"
+  | "proceed"
+  | "cancel"
+  | "extend"
+  | "mark_receiving"
+  | "mark_ready_for_packing"
+  | "mark_reconciled";
+
+export const createListingSchema = z.object({
+  catalog_product_id: z.string().uuid("Invalid product"),
+  collection_id: z.string().uuid("Invalid collection").optional(),
+  closes_on: z.string().min(1, "Closing date is required"),
+  threshold: z.number().int().min(1, "Threshold must be at least 1").optional(),
+});
+
+export const updateListingSchema = z.object({
+  collection_id: z.string().uuid().optional().nullable(),
+  closes_on: z.string().min(1).optional(),
+  threshold: z.number().int().min(1).optional().nullable(),
+});
+
+export const extendListingSchema = z.object({
+  closes_on: z.string().min(1, "New closing date is required"),
+});
+
+export type CreateListingInput = z.infer<typeof createListingSchema>;
+export type UpdateListingInput = z.infer<typeof updateListingSchema>;
+export type ExtendListingInput = z.infer<typeof extendListingSchema>;

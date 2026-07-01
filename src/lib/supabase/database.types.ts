@@ -164,6 +164,107 @@ export type Database = {
           },
         ];
       };
+
+      // ── Phase 3 ────────────────────────────────────────────────────────────
+
+      collections: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "collections_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      listings: {
+        Row: {
+          id: string;
+          business_id: string;
+          catalog_product_id: string;
+          collection_id: string | null;
+          closes_on: string;
+          threshold: number | null;
+          status:
+            | "collecting"
+            | "decision"
+            | "ordered"
+            | "receiving"
+            | "ready_for_packing"
+            | "reconciled"
+            | "cancelled";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          catalog_product_id: string;
+          collection_id?: string | null;
+          closes_on: string;
+          threshold?: number | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          catalog_product_id?: string;
+          collection_id?: string | null;
+          closes_on?: string;
+          threshold?: number | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "listings_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "listings_catalog_product_id_fkey";
+            columns: ["catalog_product_id"];
+            isOneToOne: false;
+            referencedRelation: "products";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "listings_collection_id_fkey";
+            columns: ["collection_id"];
+            isOneToOne: false;
+            referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
 
     Views: Record<string, never>;
@@ -187,3 +288,5 @@ export type UserRow = Database["public"]["Tables"]["users"]["Row"];
 export type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 export type ProductVariantRow =
   Database["public"]["Tables"]["product_variants"]["Row"];
+export type CollectionRow = Database["public"]["Tables"]["collections"]["Row"];
+export type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
