@@ -1,7 +1,18 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import type { Database } from "@/lib/supabase/database.types";
+import type { Database, CollectionRow } from "@/lib/supabase/database.types";
 import type { CreateCollectionInput, UpdateCollectionInput } from "../schemas";
+
+export type CollectionListing = {
+  id: string;
+  status: string;
+  closes_on: string;
+  products: { name: string };
+};
+
+export type CollectionWithListings = CollectionRow & {
+  listings: CollectionListing[];
+};
 
 type Client = SupabaseClient<Database>;
 
@@ -33,6 +44,22 @@ export async function createCollection(
   if (error) throw error;
   if (!data) throw new Error("Insert returned no data");
   return data;
+}
+
+export async function getCollectionWithListings(
+  client: Client,
+  id: string,
+): Promise<CollectionWithListings> {
+  const { data, error } = await client
+    .from("collections")
+    .select(`*, listings(id, status, closes_on, products(name))`)
+    .eq("id", id)
+    .order("created_at", { ascending: false, referencedTable: "listings" })
+    .single();
+
+  if (error) throw error;
+  if (!data) throw new Error("Collection not found");
+  return data as unknown as CollectionWithListings;
 }
 
 export async function updateCollection(

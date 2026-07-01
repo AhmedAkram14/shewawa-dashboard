@@ -1,21 +1,26 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+
 import { useCustomers } from "../hooks/use-customers";
 import { AddCustomerSheet } from "./add-customer-sheet";
 import type { CustomerRow } from "@/lib/supabase/database.types";
 
 function CustomerCard({ customer }: { customer: CustomerRow }) {
   return (
-    <Card>
-      <CardContent className="p-4 space-y-1">
-        <p className="font-medium">{customer.name}</p>
-        <p className="text-sm text-muted-foreground">{customer.address}</p>
-        {customer.phone && (
-          <p className="text-sm text-muted-foreground">{customer.phone}</p>
-        )}
-      </CardContent>
-    </Card>
+    <Link
+      href={`/customers/${customer.id}`}
+      className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 hover:bg-accent/50 transition-colors"
+    >
+      <div className="min-w-0 space-y-0.5">
+        <p className="font-medium truncate">{customer.name}</p>
+        <p className="text-xs text-muted-foreground truncate">
+          {customer.address}
+          {customer.phone ? ` · ${customer.phone}` : ""}
+        </p>
+      </div>
+      <span className="ml-3 text-muted-foreground shrink-0">→</span>
+    </Link>
   );
 }
 
