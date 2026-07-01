@@ -16,6 +16,7 @@ import { Separator } from "@/components/ui/separator";
 import { useDecisionListingsByFactory } from "../hooks/use-factory-orders";
 import { useCreateFactoryOrder } from "../hooks/use-factory-order-mutations";
 import { createFactoryOrderSchema } from "../schemas";
+import { getErrorMessage } from "@/lib/get-error-message";
 import type { ListingWithRelations } from "@/features/listings/api/listings";
 
 function formatDate(iso: string) {
@@ -84,9 +85,7 @@ export function ProceedToOrderSheet({
       reset();
       setOpen(false);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to create factory order",
-      );
+      setError(getErrorMessage(err, "Failed to create factory order"));
     }
   }
 

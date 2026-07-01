@@ -117,14 +117,22 @@ export async function getPackingCustomers(client: Client) {
 
   if (error) throw error;
 
-  // Fetch order IDs already in a delivery
+  // Fetch order IDs already in an active delivery.
+  // Refused and failed deliveries release their orders back to the packing queue.
   const { data: linked, error: linkedError } = await client
     .from("delivery_orders")
-    .select("order_id");
+    .select("order_id, deliveries!inner(status)");
 
   if (linkedError) throw linkedError;
 
-  const linkedIds = new Set((linked ?? []).map((l) => l.order_id));
+  const linkedIds = new Set(
+    (linked ?? [])
+      .filter((l) => {
+        const s = (l.deliveries as unknown as { status: string }).status;
+        return s !== "refused" && s !== "failed";
+      })
+      .map((l) => l.order_id),
+  );
 
   const unassigned = (data ?? []).filter((o) => !linkedIds.has(o.id));
 

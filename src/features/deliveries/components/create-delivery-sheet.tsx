@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,7 @@ import {
 import { usePackingCustomers } from "../hooks/use-deliveries";
 import { useCreateDelivery } from "../hooks/use-delivery-mutations";
 import { createDeliverySchema } from "../schemas";
+import { getErrorMessage } from "@/lib/get-error-message";
 import type { PackingCustomer } from "../api/deliveries";
 
 function formatPrice(piastres: number) {
@@ -57,8 +58,21 @@ function CustomerOrderList({
   );
 }
 
-export function CreateDeliverySheet() {
-  const [open, setOpen] = useState(false);
+export function CreateDeliverySheet({
+  defaultCustomerId,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
+}: {
+  defaultCustomerId?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+} = {}) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled =
+    controlledOpen !== undefined && controlledOnOpenChange !== undefined;
+  const open = isControlled ? controlledOpen! : internalOpen;
+  const setOpen = isControlled ? controlledOnOpenChange! : setInternalOpen;
+
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
   const [notes, setNotes] = useState("");
@@ -66,6 +80,19 @@ export function CreateDeliverySheet() {
 
   const { data: packingCustomers = [], isLoading } = usePackingCustomers();
   const createDelivery = useCreateDelivery();
+
+  // Pre-select customer when opened with a defaultCustomerId
+  useEffect(() => {
+    if (open && defaultCustomerId && packingCustomers.length > 0) {
+      const customer = packingCustomers.find(
+        (c) => c.customer.id === defaultCustomerId,
+      );
+      if (customer) {
+        setSelectedCustomerId(defaultCustomerId);
+        setSelectedOrderIds(customer.orders.map((o) => o.id));
+      }
+    }
+  }, [open, defaultCustomerId, packingCustomers]);
 
   const selectedCustomer = packingCustomers.find(
     (c) => c.customer.id === selectedCustomerId,
@@ -111,15 +138,17 @@ export function CreateDeliverySheet() {
       reset();
       setOpen(false);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to create delivery",
-      );
+      setError(getErrorMessage(err, "Failed to create delivery"));
     }
   }
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger render={<Button size="sm" />}>+ New Delivery</SheetTrigger>
+      {!isControlled && (
+        <SheetTrigger render={<Button size="sm" />}>
+          + New Delivery
+        </SheetTrigger>
+      )}
 
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader>

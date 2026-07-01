@@ -37,6 +37,11 @@ export function BusinessSettings() {
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
         Business Name
       </p>
+      {update.isError && (
+        <p className="text-xs text-destructive" role="alert">
+          {(update.error as { message?: string })?.message ?? "Failed to save."}
+        </p>
+      )}
       {editing ? (
         <div className="flex gap-2">
           <Input

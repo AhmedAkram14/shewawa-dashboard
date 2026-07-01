@@ -22,6 +22,7 @@ import { useCustomers } from "@/features/customers/hooks/use-customers";
 import { createCustomerSchema } from "@/features/customers/schemas";
 import { useListingsByStatus } from "@/features/listings/hooks/use-listings";
 import { useVariants } from "@/features/listings/hooks/use-variants";
+import { getErrorMessage } from "@/lib/get-error-message";
 import { createOrderSchema } from "../schemas";
 import { useCreateOrder } from "../hooks/use-order-mutations";
 
@@ -85,9 +86,7 @@ function VariantAndOrderForm({
         const created = await createCustomer.mutateAsync(customerParse.data);
         resolvedCustomerId = created.id;
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to create customer",
-        );
+        setError(getErrorMessage(err, "Failed to create customer"));
         return;
       }
     }
@@ -109,7 +108,7 @@ function VariantAndOrderForm({
       await createOrder.mutateAsync(orderParse.data);
       onSuccess();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create order");
+      setError(getErrorMessage(err, "Failed to create order"));
     }
   }
 

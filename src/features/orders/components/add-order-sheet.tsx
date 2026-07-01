@@ -24,6 +24,7 @@ import { useVariants } from "@/features/listings/hooks/use-variants";
 import { useCreateOrder } from "../hooks/use-order-mutations";
 import { createOrderSchema } from "../schemas";
 import { createCustomerSchema } from "@/features/customers/schemas";
+import { getErrorMessage } from "@/lib/get-error-message";
 import type { ListingWithRelations } from "@/features/listings/api/listings";
 
 type CustomerMode = "existing" | "new";
@@ -89,9 +90,7 @@ export function AddOrderSheet({ listing }: { listing: ListingWithRelations }) {
         const created = await createCustomer.mutateAsync(customerParse.data);
         resolvedCustomerId = created.id;
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to create customer",
-        );
+        setError(getErrorMessage(err, "Failed to create customer"));
         return;
       }
     }
@@ -114,7 +113,7 @@ export function AddOrderSheet({ listing }: { listing: ListingWithRelations }) {
       reset();
       setOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create order");
+      setError(getErrorMessage(err, "Failed to create order"));
     }
   }
 

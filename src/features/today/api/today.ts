@@ -83,7 +83,7 @@ export async function getTodaySnapshot(client: Client): Promise<TodaySnapshot> {
       .eq("status", "active")
       .eq("listings.status", "ready_for_packing"),
 
-    client.from("delivery_orders").select("order_id"),
+    client.from("delivery_orders").select("order_id, deliveries!inner(status)"),
 
     client
       .from("deliveries")
@@ -136,7 +136,13 @@ export async function getTodaySnapshot(client: Client): Promise<TodaySnapshot> {
 
   // Ready for Packing — exclude orders already in a delivery
   const linkedIds = new Set(
-    (linkedOrdersResult.data ?? []).map((l) => l.order_id),
+    (linkedOrdersResult.data ?? [])
+      .filter((l) => {
+        const s = (l as unknown as { deliveries: { status: string } })
+          .deliveries.status;
+        return s !== "refused" && s !== "failed";
+      })
+      .map((l) => l.order_id),
   );
   const unassigned = (packingOrdersResult.data ?? []).filter(
     (o) => !linkedIds.has(o.id),

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/sheet";
 import { useProducts } from "@/features/listings/hooks/use-products";
 import { useVariants } from "@/features/listings/hooks/use-variants";
+import { getErrorMessage } from "@/lib/get-error-message";
 import { useAddAvailableStock } from "../hooks/use-available-stock";
 import { addStockSchema, STOCK_REASONS, STOCK_REASON_LABELS } from "../schemas";
 import type { StockReason } from "../schemas";
@@ -82,7 +83,7 @@ export function AddStockSheet({
       reset();
       setOpen(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add stock");
+      setError(getErrorMessage(err, "Failed to add stock"));
     }
   }
 

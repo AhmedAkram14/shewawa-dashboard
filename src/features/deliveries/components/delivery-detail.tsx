@@ -10,7 +10,7 @@ import { DeliveryStatusBadge } from "./delivery-status-badge";
 import type { DeliveryStatus } from "../schemas";
 
 function formatPrice(piastres: number) {
-  return `EGP ${(piastres / 100).toFixed(2)}`;
+  return `EGP ${(piastres / 100).toLocaleString("en-EG", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
 function formatDate(iso: string) {

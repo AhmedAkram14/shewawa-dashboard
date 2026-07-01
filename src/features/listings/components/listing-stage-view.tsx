@@ -4,6 +4,7 @@ import type { ListingWithRelations } from "../api/listings";
 import { OrderList } from "@/features/orders/components/order-list";
 import { OrderSummary } from "@/features/orders/components/order-summary";
 import { FactoryOrderInfo } from "@/features/factory-orders/components/factory-order-info";
+import { AddStockSheet } from "@/features/available-stock/components/add-stock-sheet";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -70,9 +71,10 @@ export function ListingStageView({
       return (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Goods are being received from the factory. Mark as Ready for Packing
-            once all items have arrived.
+            Goods are being received from the factory. Log arriving stock below,
+            then mark as Ready for Packing once all items have arrived.
           </p>
+          <AddStockSheet />
         </div>
       );
 

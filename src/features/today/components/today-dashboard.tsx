@@ -10,7 +10,7 @@ import { ReadyPackingSection } from "./ready-packing-section";
 import { WaitingFactorySection } from "./waiting-factory-section";
 
 function TodayHeader() {
-  const date = new Date().toLocaleDateString(undefined, {
+  const date = new Date().toLocaleDateString("en-EG", {
     weekday: "long",
     day: "numeric",
     month: "long",

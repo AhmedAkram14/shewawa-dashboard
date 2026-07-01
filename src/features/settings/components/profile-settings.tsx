@@ -40,7 +40,15 @@ export function ProfileSettings() {
             Email
           </p>
           <p className="text-sm">{data.email}</p>
+          <p className="text-xs text-muted-foreground">
+            Managed by your sign-in provider — cannot be changed here.
+          </p>
         </div>
+      )}
+      {update.isError && (
+        <p className="text-xs text-destructive" role="alert">
+          {(update.error as { message?: string })?.message ?? "Failed to save."}
+        </p>
       )}
       <div className="space-y-1">
         <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">

@@ -62,7 +62,7 @@ export function NeedsAttentionSection({
                   </p>
                 </div>
                 <span
-                  className={`ml-3 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${LISTING_BADGE_ACCENT[item.stage]}`}
+                  className={`ml-3 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${LISTING_BADGE_ACCENT[item.stage]}`}
                 >
                   {LISTING_BADGE_LABEL[item.stage]}
                 </span>
@@ -84,7 +84,7 @@ export function NeedsAttentionSection({
                 </p>
               </div>
               <span
-                className={`ml-3 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${DELIVERY_BADGE_ACCENT[item.status]}`}
+                className={`ml-3 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${DELIVERY_BADGE_ACCENT[item.status]}`}
               >
                 {DELIVERY_BADGE_LABEL[item.status]}
               </span>

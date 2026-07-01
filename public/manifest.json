@@ -1,0 +1,10 @@
+{
+  "name": "SHE WAWA",
+  "short_name": "SHE WAWA",
+  "description": "Pre-order management dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": []
+}
