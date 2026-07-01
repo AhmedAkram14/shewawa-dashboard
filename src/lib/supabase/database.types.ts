@@ -328,6 +328,169 @@ export type Database = {
         ];
       };
 
+      // ── Phase 6 ────────────────────────────────────────────────────────────
+
+      deliveries: {
+        Row: {
+          id: string;
+          business_id: string;
+          customer_id: string;
+          status:
+            "pending" | "out_for_delivery" | "delivered" | "refused" | "failed";
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          customer_id: string;
+          status?: string;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          customer_id?: string;
+          status?: string;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "deliveries_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "deliveries_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "customers";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      delivery_orders: {
+        Row: {
+          id: string;
+          business_id: string;
+          delivery_id: string;
+          order_id: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          delivery_id: string;
+          order_id: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          delivery_id?: string;
+          order_id?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "delivery_orders_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "delivery_orders_delivery_id_fkey";
+            columns: ["delivery_id"];
+            isOneToOne: false;
+            referencedRelation: "deliveries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "delivery_orders_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      available_stock: {
+        Row: {
+          id: string;
+          business_id: string;
+          variant_id: string;
+          listing_id: string | null;
+          quantity: number;
+          reason:
+            | "factory_extra"
+            | "inventory_correction"
+            | "returned_item"
+            | "old_stock"
+            | "other";
+          notes: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          variant_id: string;
+          listing_id?: string | null;
+          quantity: number;
+          reason: string;
+          notes?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          variant_id?: string;
+          listing_id?: string | null;
+          quantity?: number;
+          reason?: string;
+          notes?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "available_stock_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "available_stock_variant_id_fkey";
+            columns: ["variant_id"];
+            isOneToOne: false;
+            referencedRelation: "product_variants";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "available_stock_listing_id_fkey";
+            columns: ["listing_id"];
+            isOneToOne: false;
+            referencedRelation: "listings";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
       // ── Phase 4 ────────────────────────────────────────────────────────────
 
       customers: {
@@ -586,3 +749,8 @@ export type FactoryOrderRow =
   Database["public"]["Tables"]["factory_orders"]["Row"];
 export type FactoryOrderLineRow =
   Database["public"]["Tables"]["factory_order_lines"]["Row"];
+export type DeliveryRow = Database["public"]["Tables"]["deliveries"]["Row"];
+export type DeliveryOrderRow =
+  Database["public"]["Tables"]["delivery_orders"]["Row"];
+export type AvailableStockRow =
+  Database["public"]["Tables"]["available_stock"]["Row"];

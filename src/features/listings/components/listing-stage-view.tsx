@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { ListingWithRelations } from "../api/listings";
 import { OrderList } from "@/features/orders/components/order-list";
 import { OrderSummary } from "@/features/orders/components/order-summary";
@@ -68,9 +70,9 @@ export function ListingStageView({
       return (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            Goods are being received from the factory.
+            Goods are being received from the factory. Mark as Ready for Packing
+            once all items have arrived.
           </p>
-          <Placeholder text="Delivery tracking — available when Deliveries are implemented" />
         </div>
       );
 
@@ -78,9 +80,12 @@ export function ListingStageView({
       return (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            All goods received. Ready to pack and distribute to customers.
+            All goods received. Go to{" "}
+            <Link href="/deliveries" className="text-primary hover:underline">
+              Deliveries
+            </Link>{" "}
+            to bundle orders by customer and create deliveries.
           </p>
-          <Placeholder text="Packing summary — available in a future phase" />
         </div>
       );
 
