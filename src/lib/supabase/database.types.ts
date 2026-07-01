@@ -79,6 +79,7 @@ export type Database = {
           description: string | null;
           image_url: string | null;
           is_active: boolean;
+          factory_id: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -89,6 +90,7 @@ export type Database = {
           description?: string | null;
           image_url?: string | null;
           is_active?: boolean;
+          factory_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -99,6 +101,7 @@ export type Database = {
           description?: string | null;
           image_url?: string | null;
           is_active?: boolean;
+          factory_id?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -108,6 +111,13 @@ export type Database = {
             columns: ["business_id"];
             isOneToOne: false;
             referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "products_factory_id_fkey";
+            columns: ["factory_id"];
+            isOneToOne: false;
+            referencedRelation: "factories";
             referencedColumns: ["id"];
           },
         ];
@@ -160,6 +170,159 @@ export type Database = {
             columns: ["business_id"];
             isOneToOne: false;
             referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      // ── Phase 5 ────────────────────────────────────────────────────────────
+
+      factories: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          contact: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          contact?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          contact?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "factories_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      factory_orders: {
+        Row: {
+          id: string;
+          business_id: string;
+          factory_id: string;
+          reference: string | null;
+          status: "draft" | "placed";
+          notes: string | null;
+          placed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          factory_id: string;
+          reference?: string | null;
+          status?: string;
+          notes?: string | null;
+          placed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          factory_id?: string;
+          reference?: string | null;
+          status?: string;
+          notes?: string | null;
+          placed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "factory_orders_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "factory_orders_factory_id_fkey";
+            columns: ["factory_id"];
+            isOneToOne: false;
+            referencedRelation: "factories";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      factory_order_lines: {
+        Row: {
+          id: string;
+          business_id: string;
+          factory_order_id: string;
+          listing_id: string;
+          variant_id: string;
+          quantity: number;
+          unit_cost: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          factory_order_id: string;
+          listing_id: string;
+          variant_id: string;
+          quantity: number;
+          unit_cost: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          factory_order_id?: string;
+          listing_id?: string;
+          variant_id?: string;
+          quantity?: number;
+          unit_cost?: number;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "factory_order_lines_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "factory_order_lines_factory_order_id_fkey";
+            columns: ["factory_order_id"];
+            isOneToOne: false;
+            referencedRelation: "factory_orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "factory_order_lines_listing_id_fkey";
+            columns: ["listing_id"];
+            isOneToOne: false;
+            referencedRelation: "listings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "factory_order_lines_variant_id_fkey";
+            columns: ["variant_id"];
+            isOneToOne: false;
+            referencedRelation: "product_variants";
             referencedColumns: ["id"];
           },
         ];
@@ -324,6 +487,7 @@ export type Database = {
           collection_id: string | null;
           closes_on: string;
           threshold: number | null;
+          factory_order_id: string | null;
           status:
             | "collecting"
             | "decision"
@@ -342,6 +506,7 @@ export type Database = {
           collection_id?: string | null;
           closes_on: string;
           threshold?: number | null;
+          factory_order_id?: string | null;
           status?: string;
           created_at?: string;
           updated_at?: string;
@@ -353,6 +518,7 @@ export type Database = {
           collection_id?: string | null;
           closes_on?: string;
           threshold?: number | null;
+          factory_order_id?: string | null;
           status?: string;
           created_at?: string;
           updated_at?: string;
@@ -377,6 +543,13 @@ export type Database = {
             columns: ["collection_id"];
             isOneToOne: false;
             referencedRelation: "collections";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "listings_factory_order_id_fkey";
+            columns: ["factory_order_id"];
+            isOneToOne: false;
+            referencedRelation: "factory_orders";
             referencedColumns: ["id"];
           },
         ];
@@ -408,3 +581,8 @@ export type CollectionRow = Database["public"]["Tables"]["collections"]["Row"];
 export type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
 export type CustomerRow = Database["public"]["Tables"]["customers"]["Row"];
 export type OrderRow = Database["public"]["Tables"]["orders"]["Row"];
+export type FactoryRow = Database["public"]["Tables"]["factories"]["Row"];
+export type FactoryOrderRow =
+  Database["public"]["Tables"]["factory_orders"]["Row"];
+export type FactoryOrderLineRow =
+  Database["public"]["Tables"]["factory_order_lines"]["Row"];

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useTransitionListingStatus } from "../hooks/use-listing-mutations";
+import { ProceedToOrderSheet } from "@/features/factory-orders/components/proceed-to-order-sheet";
 import type { ListingWithRelations } from "../api/listings";
 import type { ListingStatus, ListingAction } from "../schemas";
 
@@ -21,7 +22,6 @@ const ACTIONS: Partial<Record<ListingStatus, ActionConfig[]>> = {
     { action: "end_collecting", label: "End Collecting", variant: "outline" },
   ],
   decision: [
-    { action: "proceed", label: "Proceed to Order", variant: "default" },
     { action: "extend", label: "Extend Closing Date", variant: "outline" },
     { action: "cancel", label: "Cancel Listing", variant: "destructive" },
   ],
@@ -128,6 +128,9 @@ export function ListingActions({ listing }: { listing: ListingWithRelations }) {
         </div>
       ) : (
         <div className="flex flex-col gap-2">
+          {listing.status === "decision" && (
+            <ProceedToOrderSheet listing={listing} />
+          )}
           {actions.map((a) => (
             <Button
               key={a.action}

@@ -1,6 +1,7 @@
 import type { ListingWithRelations } from "../api/listings";
 import { OrderList } from "@/features/orders/components/order-list";
 import { OrderSummary } from "@/features/orders/components/order-summary";
+import { FactoryOrderInfo } from "@/features/factory-orders/components/factory-order-info";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -55,7 +56,11 @@ export function ListingStageView({
           <p className="text-sm text-muted-foreground">
             A factory order has been placed for this listing.
           </p>
-          <Placeholder text="Factory order details — available when Factory Orders are implemented" />
+          {listing.factory_order_id ? (
+            <FactoryOrderInfo factoryOrderId={listing.factory_order_id} />
+          ) : (
+            <Placeholder text="Factory order not yet assigned." />
+          )}
         </div>
       );
 
