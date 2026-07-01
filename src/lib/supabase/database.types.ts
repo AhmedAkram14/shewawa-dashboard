@@ -165,6 +165,122 @@ export type Database = {
         ];
       };
 
+      // ── Phase 4 ────────────────────────────────────────────────────────────
+
+      customers: {
+        Row: {
+          id: string;
+          business_id: string;
+          name: string;
+          address: string;
+          phone: string | null;
+          notes: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          name: string;
+          address: string;
+          phone?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          name?: string;
+          address?: string;
+          phone?: string | null;
+          notes?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "customers_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
+      orders: {
+        Row: {
+          id: string;
+          business_id: string;
+          listing_id: string;
+          customer_id: string;
+          variant_id: string;
+          quantity: number;
+          unit_price: number;
+          notes: string | null;
+          status: "active" | "cancelled";
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id: string;
+          listing_id: string;
+          customer_id: string;
+          variant_id: string;
+          quantity: number;
+          unit_price: number;
+          notes?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          listing_id?: string;
+          customer_id?: string;
+          variant_id?: string;
+          quantity?: number;
+          unit_price?: number;
+          notes?: string | null;
+          status?: string;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "orders_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "orders_listing_id_fkey";
+            columns: ["listing_id"];
+            isOneToOne: false;
+            referencedRelation: "listings";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "orders_customer_id_fkey";
+            columns: ["customer_id"];
+            isOneToOne: false;
+            referencedRelation: "customers";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "orders_variant_id_fkey";
+            columns: ["variant_id"];
+            isOneToOne: false;
+            referencedRelation: "product_variants";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
       // ── Phase 3 ────────────────────────────────────────────────────────────
 
       collections: {
@@ -290,3 +406,5 @@ export type ProductVariantRow =
   Database["public"]["Tables"]["product_variants"]["Row"];
 export type CollectionRow = Database["public"]["Tables"]["collections"]["Row"];
 export type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
+export type CustomerRow = Database["public"]["Tables"]["customers"]["Row"];
+export type OrderRow = Database["public"]["Tables"]["orders"]["Row"];

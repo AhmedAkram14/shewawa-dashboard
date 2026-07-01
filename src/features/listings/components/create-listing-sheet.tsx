@@ -10,7 +10,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import {
   Sheet,
@@ -37,6 +36,8 @@ export function CreateListingSheet() {
   const createListing = useCreateListing();
 
   const activeProducts = products.filter((p) => p.is_active);
+  const selectedProduct = activeProducts.find((p) => p.id === productId);
+  const selectedCollection = collections.find((c) => c.id === collectionId);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -84,7 +85,11 @@ export function CreateListingSheet() {
               onValueChange={(v) => setProductId(v ?? "")}
             >
               <SelectTrigger id="product" className="w-full">
-                <SelectValue placeholder="Select a product" />
+                <span
+                  className={`flex flex-1 text-left text-sm ${!selectedProduct ? "text-muted-foreground" : ""}`}
+                >
+                  {selectedProduct ? selectedProduct.name : "Select a product"}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 {activeProducts.map((p) => (
@@ -103,7 +108,11 @@ export function CreateListingSheet() {
               onValueChange={(v) => setCollectionId(v ?? "")}
             >
               <SelectTrigger id="collection" className="w-full">
-                <SelectValue placeholder="None" />
+                <span
+                  className={`flex flex-1 text-left text-sm ${!selectedCollection ? "text-muted-foreground" : ""}`}
+                >
+                  {selectedCollection ? selectedCollection.name : "None"}
+                </span>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="">None</SelectItem>

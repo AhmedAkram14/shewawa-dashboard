@@ -1,4 +1,6 @@
 import type { ListingWithRelations } from "../api/listings";
+import { OrderList } from "@/features/orders/components/order-list";
+import { OrderSummary } from "@/features/orders/components/order-summary";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, {
@@ -33,15 +35,7 @@ export function ListingStageView({
             </span>
             .
           </p>
-          {listing.threshold && (
-            <p className="text-sm text-muted-foreground">
-              Minimum threshold:{" "}
-              <span className="font-medium text-foreground">
-                {listing.threshold} orders
-              </span>
-            </p>
-          )}
-          <Placeholder text="Order list — available when Orders are implemented" />
+          <OrderList listing={listing} />
         </div>
       );
 
@@ -51,15 +45,7 @@ export function ListingStageView({
           <p className="text-sm font-medium">
             Collecting ended. Review orders and choose an action below.
           </p>
-          {listing.threshold && (
-            <p className="text-sm text-muted-foreground">
-              Threshold was{" "}
-              <span className="font-medium text-foreground">
-                {listing.threshold} orders
-              </span>
-            </p>
-          )}
-          <Placeholder text="Order summary — available when Orders are implemented" />
+          <OrderSummary listing={listing} />
         </div>
       );
 
