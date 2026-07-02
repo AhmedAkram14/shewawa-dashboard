@@ -7,7 +7,7 @@ import { getVariants } from "../api/variants";
 
 export function useVariants(productId: string) {
   return useQuery({
-    queryKey: ["listings", productId, "variants"],
+    queryKey: ["products", productId, "variants"],
     queryFn: () => getVariants(createClient(), productId),
     enabled: !!productId,
   });

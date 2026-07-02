@@ -7,14 +7,14 @@ import { getProducts, getProduct } from "../api/products";
 
 export function useProducts() {
   return useQuery({
-    queryKey: ["listings"],
+    queryKey: ["products"],
     queryFn: () => getProducts(createClient()),
   });
 }
 
 export function useProduct(id: string) {
   return useQuery({
-    queryKey: ["listings", id],
+    queryKey: ["products", id],
     queryFn: () => getProduct(createClient(), id),
     enabled: !!id,
   });

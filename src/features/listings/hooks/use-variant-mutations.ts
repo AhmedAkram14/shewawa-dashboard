@@ -13,7 +13,7 @@ export function useCreateVariant(productId: string) {
     mutationFn: (input: CreateVariantInput) =>
       createVariant(createClient(), input),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["listings", productId, "variants"] });
+      qc.invalidateQueries({ queryKey: ["products", productId, "variants"] });
     },
   });
 }
@@ -25,7 +25,7 @@ export function useUpdateVariant(productId: string) {
     mutationFn: ({ id, input }: { id: string; input: UpdateVariantInput }) =>
       updateVariant(createClient(), id, input),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["listings", productId, "variants"] });
+      qc.invalidateQueries({ queryKey: ["products", productId, "variants"] });
     },
   });
 }
@@ -36,7 +36,7 @@ export function useDeleteVariant(productId: string) {
   return useMutation({
     mutationFn: (id: string) => deleteVariant(createClient(), id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["listings", productId, "variants"] });
+      qc.invalidateQueries({ queryKey: ["products", productId, "variants"] });
     },
   });
 }

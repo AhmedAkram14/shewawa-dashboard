@@ -13,7 +13,7 @@ export function useCreateProduct() {
     mutationFn: (input: CreateProductInput) =>
       createProduct(createClient(), input),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["listings"] });
+      qc.invalidateQueries({ queryKey: ["products"] });
     },
   });
 }
@@ -25,8 +25,8 @@ export function useUpdateProduct() {
     mutationFn: ({ id, input }: { id: string; input: UpdateProductInput }) =>
       updateProduct(createClient(), id, input),
     onSuccess: (_, { id }) => {
-      qc.invalidateQueries({ queryKey: ["listings"] });
-      qc.invalidateQueries({ queryKey: ["listings", id] });
+      qc.invalidateQueries({ queryKey: ["products"] });
+      qc.invalidateQueries({ queryKey: ["products", id] });
     },
   });
 }
@@ -37,7 +37,7 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: (id: string) => deleteProduct(createClient(), id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["listings"] });
+      qc.invalidateQueries({ queryKey: ["products"] });
     },
   });
 }
