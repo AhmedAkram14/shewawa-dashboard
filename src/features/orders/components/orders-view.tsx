@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { ListingStatusBadge } from "@/features/listings/components/listing-status-badge";
 import type { ListingStatus } from "@/features/listings/schemas";
 import { useAllOrders } from "../hooks/use-orders";
@@ -74,23 +73,21 @@ export function OrdersView() {
           No orders yet. Open a listing to add orders.
         </p>
       ) : (
-        <div className="space-y-2">
+        <div className="divide-y overflow-hidden rounded-lg border">
           {groups.map((g) => (
-            <Link key={g.listingId} href={`/listings/${g.listingId}`}>
-              <Card className="py-0 hover:bg-accent/50 transition-colors">
-                <CardContent className="flex items-center justify-between gap-3 px-4 py-3">
-                  <div className="min-w-0">
-                    <p className="truncate font-medium">{g.productName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {g.activeCount} {g.activeCount === 1 ? "order" : "orders"}{" "}
-                      · {g.totalPieces} pcs
-                    </p>
-                  </div>
-                  <ListingStatusBadge
-                    status={g.listingStatus as ListingStatus}
-                  />
-                </CardContent>
-              </Card>
+            <Link
+              key={g.listingId}
+              href={`/listings/${g.listingId}`}
+              className="flex items-center justify-between gap-3 bg-card px-4 py-4 transition-colors hover:bg-accent/50 active:bg-accent/70"
+            >
+              <div className="min-w-0">
+                <p className="truncate font-medium">{g.productName}</p>
+                <p className="text-sm text-muted-foreground">
+                  {g.activeCount} {g.activeCount === 1 ? "order" : "orders"} ·{" "}
+                  {g.totalPieces} pcs
+                </p>
+              </div>
+              <ListingStatusBadge status={g.listingStatus as ListingStatus} />
             </Link>
           ))}
         </div>

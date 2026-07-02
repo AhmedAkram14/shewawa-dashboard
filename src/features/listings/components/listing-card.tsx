@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { Card, CardContent } from "@/components/ui/card";
 import type { ListingSummary } from "../api/listings";
 import { ListingStatusBadge } from "./listing-status-badge";
 import type { ListingStatus } from "../schemas";
@@ -26,27 +25,33 @@ export function ListingCard({ listing }: { listing: ListingSummary }) {
   const isActive = listing.status === "collecting";
 
   return (
-    <Link href={`/listings/${listing.id}`}>
-      <Card className="py-0 hover:bg-accent/50 transition-colors">
-        <CardContent className="space-y-1.5 px-4 py-3">
-          <div className="flex items-start justify-between gap-2">
-            <p className="font-medium leading-tight">{listing.products.name}</p>
-            <ListingStatusBadge status={listing.status as ListingStatus} />
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-            {listing.collections && <span>{listing.collections.name}</span>}
-            {isActive ? (
-              <span className="text-foreground font-medium">
-                {closesInLabel(listing.closes_on)}
-              </span>
-            ) : (
-              <span>{formatDate(listing.closes_on)}</span>
-            )}
-            {listing.threshold && <span>Min: {listing.threshold} pcs</span>}
-          </div>
-        </CardContent>
-      </Card>
+    <Link
+      href={`/listings/${listing.id}`}
+      className="flex items-start justify-between gap-3 bg-card px-4 py-4 transition-colors hover:bg-accent/50 active:bg-accent/70"
+    >
+      <div className="min-w-0 space-y-0.5">
+        <p className="truncate font-medium leading-tight">
+          {listing.products.name}
+        </p>
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
+          {listing.collections && <span>{listing.collections.name}</span>}
+          {listing.collections && <span>·</span>}
+          {isActive ? (
+            <span className="font-medium text-foreground">
+              {closesInLabel(listing.closes_on)}
+            </span>
+          ) : (
+            <span>{formatDate(listing.closes_on)}</span>
+          )}
+          {listing.threshold && (
+            <>
+              <span>·</span>
+              <span>Min {listing.threshold} pcs</span>
+            </>
+          )}
+        </div>
+      </div>
+      <ListingStatusBadge status={listing.status as ListingStatus} />
     </Link>
   );
 }

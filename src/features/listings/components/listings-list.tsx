@@ -61,9 +61,11 @@ export function ListingsList() {
           <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {group.label}
           </h2>
-          {group.items.map((listing) => (
-            <ListingCard key={listing.id} listing={listing} />
-          ))}
+          <div className="overflow-hidden rounded-lg border divide-y">
+            {group.items.map((listing) => (
+              <ListingCard key={listing.id} listing={listing} />
+            ))}
+          </div>
         </section>
       ))}
     </div>
