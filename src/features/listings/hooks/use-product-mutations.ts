@@ -3,8 +3,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { createClient } from "@/lib/supabase/client";
-import { createProduct, updateProduct, deleteProduct } from "../api/products";
+import {
+  createProduct,
+  updateProduct,
+  deleteProduct,
+  createProductWithVariants,
+} from "../api/products";
 import type { CreateProductInput, UpdateProductInput } from "../schemas";
+import type { CreateProductWithVariantsInput } from "../api/products";
 
 export function useCreateProduct() {
   const qc = useQueryClient();
@@ -36,6 +42,18 @@ export function useDeleteProduct() {
 
   return useMutation({
     mutationFn: (id: string) => deleteProduct(createClient(), id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["products"] });
+    },
+  });
+}
+
+export function useCreateProductWithVariants() {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: (input: CreateProductWithVariantsInput) =>
+      createProductWithVariants(createClient(), input),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
     },

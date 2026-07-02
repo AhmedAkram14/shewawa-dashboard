@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +23,7 @@ import { useProducts } from "../hooks/use-products";
 import { useCollections } from "../hooks/use-collections";
 import { useCreateListing } from "../hooks/use-listing-mutations";
 import { createListingSchema } from "../schemas";
+import { CreateProductInlineSheet } from "./create-product-inline-sheet";
 
 export function CreateListingSheet() {
   const [open, setOpen] = useState(false);
@@ -30,6 +32,7 @@ export function CreateListingSheet() {
   const [closesOn, setClosesOn] = useState("");
   const [threshold, setThreshold] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [createProductOpen, setCreateProductOpen] = useState(false);
 
   const { data: products = [] } = useProducts();
   const { data: collections = [] } = useCollections();
@@ -97,6 +100,17 @@ export function CreateListingSheet() {
                     {p.name}
                   </SelectItem>
                 ))}
+                {/* Not a SelectItem — clicking it does not set a value */}
+                <div className="border-t mt-1 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setCreateProductOpen(true)}
+                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-primary hover:bg-accent focus:bg-accent outline-none"
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    Create New Product
+                  </button>
+                </div>
               </SelectContent>
             </Select>
           </div>
@@ -165,6 +179,17 @@ export function CreateListingSheet() {
           </Button>
         </form>
       </SheetContent>
+
+      {/* Nested sheet — renders in its own portal, above the listing sheet.
+          Closing it returns the owner to the listing form with state intact. */}
+      <CreateProductInlineSheet
+        open={createProductOpen}
+        onOpenChange={setCreateProductOpen}
+        onSuccess={(product) => {
+          setProductId(product.id);
+          setCreateProductOpen(false);
+        }}
+      />
     </Sheet>
   );
 }
