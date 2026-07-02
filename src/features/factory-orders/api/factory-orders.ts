@@ -15,12 +15,35 @@ export type FactoryOrderWithFactory = FactoryOrderRow & {
   factories: { id: string; name: string };
 };
 
+export type ReceiptRecord = {
+  id: string;
+  quantity: number;
+  received_at: string;
+  reversal_of: string | null;
+  notes: string | null;
+};
+
+export type AllocationOrderLine = {
+  id: string;
+  order_id: string;
+  quantity: number;
+  allocated_quantity: number;
+  status: "pending" | "at_factory" | "allocated" | "cancelled";
+  orders: {
+    order_number: number;
+    created_at: string;
+    customers: { name: string };
+  };
+};
+
 export type FactoryOrderLineDetail = FactoryOrderLineRow & {
   product_variants: {
     id: string;
     name: string;
     products: { id: string; name: string };
   };
+  factory_receipts: ReceiptRecord[];
+  order_lines: AllocationOrderLine[];
 };
 
 export type FactoryOrderDetail = FactoryOrderRow & {
@@ -52,7 +75,13 @@ export async function getFactoryOrder(
     .from("factory_orders")
     .select(
       `*, factories(id, name),
-      factory_order_lines(*, product_variants(id, name, products(id, name)))`,
+      factory_order_lines(
+        *,
+        product_variants(id, name, products(id, name)),
+        factory_receipts(id, quantity, received_at, reversal_of, notes),
+        order_lines(id, order_id, quantity, allocated_quantity, status,
+          orders(order_number, created_at, customers(name)))
+      )`,
     )
     .eq("id", id)
     .single();
@@ -93,4 +122,26 @@ export async function callCreateFactoryOrder(
   });
   if (error) throw error;
   return data as string;
+}
+
+export async function callRecordFactoryReceipts(
+  supabase: DB,
+  args: {
+    factory_order_id: string;
+    received_at: string;
+    notes: string | null;
+    receipts: {
+      factory_order_line_id: string;
+      quantity: number;
+      allocations: { order_line_id: string; quantity: number }[];
+    }[];
+  },
+): Promise<void> {
+  const { error } = await supabase.rpc("record_factory_receipts", {
+    p_factory_order_id: args.factory_order_id,
+    p_received_at: args.received_at,
+    p_notes: args.notes,
+    p_receipts: args.receipts as unknown as Json,
+  });
+  if (error) throw error;
 }

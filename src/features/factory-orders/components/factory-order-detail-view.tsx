@@ -2,21 +2,33 @@
 
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 import { useFactoryOrder } from "../hooks/use-factory-orders";
-import type { FactoryOrderDetail } from "../api/factory-orders";
+import type {
+  FactoryOrderDetail,
+  FactoryOrderLineDetail,
+} from "../api/factory-orders";
 import { FactoryOrderStatusBadge } from "./factory-order-status-badge";
+import { RecordReceiptSheet } from "./record-receipt-sheet";
 
 interface Props {
   id: string;
   initialData: FactoryOrderDetail;
 }
 
+function totalReceivedForLine(fol: FactoryOrderLineDetail): number {
+  return fol.factory_receipts
+    .filter((r) => r.reversal_of === null)
+    .reduce((s, r) => s + r.quantity, 0);
+}
+
 export function FactoryOrderDetailView({ id, initialData }: Props) {
   const { data: fo } = useFactoryOrder(id, initialData);
+  const [receiptOpen, setReceiptOpen] = useState(false);
 
   if (!fo) return null;
 
@@ -26,7 +38,7 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
   );
 
   return (
-    <div className="mx-auto max-w-lg space-y-5 p-4">
+    <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
       {/* Header */}
       <div className="flex items-center gap-2">
         <Button
@@ -57,30 +69,74 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         </Link>
       </section>
 
-      {/* Lines */}
+      {/* Lines with per-line progress (Refinement 2) */}
       <section>
         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Items · {fo.factory_order_lines.length} variant
           {fo.factory_order_lines.length !== 1 ? "s" : ""} · {totalPieces} pcs
         </p>
         <ul className="divide-y rounded-lg border">
-          {fo.factory_order_lines.map((line) => (
-            <li key={line.id} className="flex items-center justify-between p-3">
-              <div>
-                <p className="font-medium">
-                  {line.product_variants.products.name}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {line.product_variants.name}
-                </p>
-              </div>
-              <span className="text-sm font-medium">{line.quantity} pcs</span>
-            </li>
-          ))}
+          {fo.factory_order_lines.map((line) => {
+            const received = totalReceivedForLine(line);
+            const remaining = line.quantity - received;
+            const isComplete = remaining === 0;
+            const activeReceipts = line.factory_receipts.filter(
+              (r) => r.reversal_of === null,
+            );
+
+            return (
+              <li key={line.id} className="p-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-medium">
+                      {line.product_variants.products.name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {line.product_variants.name}
+                    </p>
+                  </div>
+                  {isComplete ? (
+                    <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                      Complete
+                    </span>
+                  ) : (
+                    <span className="shrink-0 text-sm font-medium">
+                      {line.quantity} pcs
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-1.5 flex gap-4 text-xs text-muted-foreground">
+                  <span>Ordered: {line.quantity}</span>
+                  <span>Received: {received}</span>
+                  {!isComplete && <span>Remaining: {remaining}</span>}
+                </div>
+
+                {activeReceipts.length > 0 && (
+                  <ul className="mt-2 space-y-0.5">
+                    {activeReceipts.map((r) => (
+                      <li
+                        key={r.id}
+                        className="flex items-center gap-2 text-xs text-muted-foreground"
+                      >
+                        <span className="h-1 w-1 shrink-0 rounded-full bg-muted-foreground/40" />
+                        <span>
+                          {new Date(r.received_at).toLocaleDateString("en-EG")}
+                        </span>
+                        <span className="font-medium text-foreground">
+                          +{r.quantity} pcs
+                        </span>
+                        {r.notes && <span className="truncate">{r.notes}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </section>
 
-      {/* Notes */}
       {fo.notes && (
         <section>
           <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -95,6 +151,18 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
       <p className="text-xs text-muted-foreground">
         Created {new Date(fo.created_at).toLocaleString("en-EG")}
       </p>
+
+      {fo.status === "open" && (
+        <Button className="w-full" onClick={() => setReceiptOpen(true)}>
+          Record Factory Receipt
+        </Button>
+      )}
+
+      <RecordReceiptSheet
+        open={receiptOpen}
+        onOpenChange={setReceiptOpen}
+        fo={fo}
+      />
     </div>
   );
 }

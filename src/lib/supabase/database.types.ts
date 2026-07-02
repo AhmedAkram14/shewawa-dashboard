@@ -682,6 +682,15 @@ export type Database = {
         };
         Returns: string;
       };
+      record_factory_receipts: {
+        Args: {
+          p_factory_order_id: string;
+          p_received_at: string;
+          p_notes: string | null;
+          p_receipts: Json;
+        };
+        Returns: undefined;
+      };
     };
 
     Enums: Record<string, never>;
