@@ -1,3 +1,6 @@
+export type Json =
+  string | number | boolean | null | { [key: string]: Json } | Json[];
+
 /**
  * Hand-written database types for the v2 domain model.
  *
@@ -660,6 +663,15 @@ export type Database = {
     Functions: {
       get_my_business_id: {
         Args: Record<string, never>;
+        Returns: string;
+      };
+      create_order: {
+        Args: {
+          p_customer_id: string;
+          p_deposit_amount: number;
+          p_notes: string | null;
+          p_lines: Json;
+        };
         Returns: string;
       };
     };
