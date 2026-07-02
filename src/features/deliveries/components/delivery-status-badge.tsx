@@ -2,11 +2,11 @@ import { Badge } from "@/components/ui/badge";
 import type { DeliveryStatus } from "../schemas";
 
 const STATUS_STYLES: Record<DeliveryStatus, string> = {
-  pending: "bg-gray-100 text-gray-700 border-gray-200",
-  out_for_delivery: "bg-blue-100 text-blue-800 border-blue-200",
-  delivered: "bg-green-100 text-green-800 border-green-200",
-  refused: "bg-orange-100 text-orange-800 border-orange-200",
-  failed: "bg-red-100 text-red-800 border-red-200",
+  pending: "bg-muted text-muted-foreground border-transparent",
+  out_for_delivery: "bg-warn-bg text-warn-tx border-transparent",
+  delivered: "bg-success-bg text-success-tx border-transparent",
+  refused: "bg-danger-bg text-danger-tx border-transparent",
+  failed: "bg-danger-bg text-danger-tx border-transparent",
 };
 
 const STATUS_LABELS: Record<DeliveryStatus, string> = {

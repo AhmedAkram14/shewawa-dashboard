@@ -110,7 +110,7 @@ export function DeliveryDetail({ id }: { id: string }) {
         </div>
         <div className="flex justify-between text-sm font-medium px-1">
           <span>Total</span>
-          <span>{formatPrice(orderTotal)}</span>
+          <span className="font-display">{formatPrice(orderTotal)}</span>
         </div>
       </div>
 

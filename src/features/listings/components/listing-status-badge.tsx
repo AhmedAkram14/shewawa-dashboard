@@ -7,36 +7,31 @@ const STATUS_CONFIG: Record<
 > = {
   collecting: {
     label: "Collecting",
-    className:
-      "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+    className: "bg-c50 text-coral-dk border-transparent",
   },
   decision: {
     label: "Decision Required",
-    className:
-      "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+    className: "bg-warn-bg text-warn-tx border-transparent",
   },
   ordered: {
     label: "Ordered",
-    className:
-      "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300",
+    className: "bg-muted text-muted-foreground border-transparent",
   },
   receiving: {
     label: "Receiving",
-    className:
-      "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
+    className: "bg-warn-bg text-warn-tx border-transparent",
   },
   ready_for_packing: {
     label: "Ready for Packing",
-    className:
-      "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+    className: "bg-success-bg text-success-tx border-transparent",
   },
   reconciled: {
     label: "Reconciled",
-    className: "bg-muted text-muted-foreground",
+    className: "bg-muted text-muted-foreground border-transparent",
   },
   cancelled: {
     label: "Cancelled",
-    className: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+    className: "bg-danger-bg text-danger-tx border-transparent",
   },
 };
 

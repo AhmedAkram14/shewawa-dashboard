@@ -4,7 +4,7 @@
   "description": "Pre-order management dashboard",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#FDFCFA",
+  "theme_color": "#C8685C",
   "icons": []
 }

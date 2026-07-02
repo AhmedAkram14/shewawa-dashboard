@@ -50,7 +50,7 @@ export function BottomNav() {
               type="button"
               aria-label="New Order"
               onClick={() => setNewOrderOpen(true)}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md transition-opacity hover:opacity-90 active:opacity-75"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75"
             >
               <Plus className="h-6 w-6" />
             </button>
@@ -91,7 +91,9 @@ function NavItem({
     <Link
       href={href}
       className={`flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
-        active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+        active
+          ? "text-foreground font-semibold"
+          : "text-ink4 hover:text-foreground"
       }`}
     >
       <Icon className="h-5 w-5" />

@@ -22,11 +22,11 @@ function SummaryCard({
 }) {
   const accentClass =
     accent === "green"
-      ? "border-green-200 bg-green-50"
+      ? "border-success-bg bg-success-bg"
       : accent === "red"
-        ? "border-red-200 bg-red-50"
+        ? "border-danger-bg bg-danger-bg"
         : accent === "orange"
-          ? "border-orange-200 bg-orange-50"
+          ? "border-warn-bg bg-warn-bg"
           : "";
 
   return (
@@ -34,7 +34,7 @@ function SummaryCard({
       <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
         {label}
       </p>
-      <p className="text-lg font-semibold tabular-nums">{value}</p>
+      <p className="text-lg font-semibold tabular-nums font-display">{value}</p>
       {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
     </div>
   );
@@ -98,13 +98,13 @@ export function MoneySummary() {
                 className="grid grid-cols-[1fr_auto_auto_auto] gap-3 border-b px-3 py-2.5 last:border-0"
               >
                 <span className="truncate font-medium">{row.product_name}</span>
-                <span className="text-right tabular-nums text-green-700">
+                <span className="text-right tabular-nums text-success-tx font-display">
                   {formatEGP(row.money_in)}
                 </span>
-                <span className="text-right tabular-nums text-red-700">
+                <span className="text-right tabular-nums text-danger-tx font-display">
                   {formatEGP(row.money_out)}
                 </span>
-                <span className="text-right tabular-nums text-orange-700">
+                <span className="text-right tabular-nums text-warn-tx font-display">
                   {formatEGP(row.at_risk)}
                 </span>
               </div>

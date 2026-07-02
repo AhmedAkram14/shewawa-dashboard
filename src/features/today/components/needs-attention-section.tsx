@@ -4,13 +4,13 @@ import type { NeedsAttentionItem } from "../api/today";
 import { TodaySection } from "./today-section";
 
 const LISTING_BADGE_ACCENT: Record<"decision" | "receiving", string> = {
-  decision: "bg-yellow-100 text-yellow-800",
-  receiving: "bg-blue-100 text-blue-800",
+  decision: "bg-warn-bg text-warn-tx",
+  receiving: "bg-warn-bg text-warn-tx",
 };
 
 const DELIVERY_BADGE_ACCENT: Record<"failed" | "refused", string> = {
-  failed: "bg-red-100 text-red-800",
-  refused: "bg-orange-100 text-orange-800",
+  failed: "bg-danger-bg text-danger-tx",
+  refused: "bg-danger-bg text-danger-tx",
 };
 
 const LISTING_ACTION: Record<"decision" | "receiving", string> = {

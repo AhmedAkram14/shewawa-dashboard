@@ -2,8 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import type { FactoryOrderStatus } from "../schemas";
 
 const STATUS_STYLES: Record<FactoryOrderStatus, string> = {
-  draft: "bg-yellow-100 text-yellow-800 border-yellow-200",
-  placed: "bg-blue-100 text-blue-800 border-blue-200",
+  draft: "bg-muted text-muted-foreground border-transparent",
+  placed: "bg-c50 text-coral-dk border-transparent",
 };
 
 const STATUS_LABELS: Record<FactoryOrderStatus, string> = {
