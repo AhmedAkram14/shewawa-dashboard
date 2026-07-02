@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -10,6 +11,8 @@ import { formatPrice } from "@/lib/format";
 import { useOrder } from "../hooks/use-orders";
 import type { OrderDetail } from "../api/orders";
 import { OrderLineStatusBadge, OrderStatusBadge } from "./order-status-badge";
+import { EditOrderSheet } from "./edit-order-sheet";
+import { CancelOrderSheet } from "./cancel-order-sheet";
 
 interface Props {
   id: string;
@@ -18,6 +21,8 @@ interface Props {
 
 export function OrderDetailView({ id, initialData }: Props) {
   const { data: order } = useOrder(id, initialData);
+  const [editOpen, setEditOpen] = useState(false);
+  const [cancelOpen, setCancelOpen] = useState(false);
 
   if (!order) return null;
 
@@ -27,8 +32,11 @@ export function OrderDetailView({ id, initialData }: Props) {
   );
   const balance = Math.max(0, subtotal - order.deposit_amount);
 
+  const canEdit = order.status === "pending";
+  const canCancel = order.status === "pending" || order.status === "ready";
+
   return (
-    <div className="mx-auto max-w-lg space-y-5 p-4">
+    <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
       {/* Header */}
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" render={<Link href="/orders" />}>
@@ -38,7 +46,19 @@ export function OrderDetailView({ id, initialData }: Props) {
           <h1 className="text-2xl font-semibold leading-tight">
             Order #{order.order_number}
           </h1>
-          <OrderStatusBadge status={order.status} />
+          <div className="flex items-center gap-2">
+            <OrderStatusBadge status={order.status} />
+            {canEdit && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setEditOpen(true)}
+                aria-label="Edit order"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -88,7 +108,7 @@ export function OrderDetailView({ id, initialData }: Props) {
                     </p>
                   )}
                 </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
+                <div className="flex shrink-0 flex-col items-end gap-1">
                   <span className="font-medium">
                     EGP {formatPrice(line.quantity * line.unit_price)}
                   </span>
@@ -101,7 +121,7 @@ export function OrderDetailView({ id, initialData }: Props) {
       </section>
 
       {/* Totals */}
-      <section className="rounded-lg border divide-y">
+      <section className="divide-y rounded-lg border">
         <div className="flex justify-between p-3">
           <span className="text-sm text-muted-foreground">Subtotal</span>
           <span className="text-sm font-medium">
@@ -137,6 +157,27 @@ export function OrderDetailView({ id, initialData }: Props) {
       <p className="text-xs text-muted-foreground">
         Created {new Date(order.created_at).toLocaleString("en-EG")}
       </p>
+
+      {canCancel && (
+        <Button
+          variant="outline"
+          className="w-full border-destructive/40 text-destructive hover:bg-destructive/5 hover:text-destructive"
+          onClick={() => setCancelOpen(true)}
+        >
+          Cancel Order
+        </Button>
+      )}
+
+      <EditOrderSheet
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        order={order}
+      />
+      <CancelOrderSheet
+        open={cancelOpen}
+        onOpenChange={setCancelOpen}
+        order={order}
+      />
     </div>
   );
 }

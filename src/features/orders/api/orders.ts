@@ -71,6 +71,28 @@ export async function getProductsForPicker(
   return data as ProductForPicker[];
 }
 
+export async function callUpdateOrder(
+  supabase: DB,
+  args: { order_id: string; deposit_amount: number; notes: string | null },
+): Promise<void> {
+  const { error } = await supabase.rpc("update_order", {
+    p_order_id: args.order_id,
+    p_deposit_amount: args.deposit_amount,
+    p_notes: args.notes,
+  });
+  if (error) throw error;
+}
+
+export async function callCancelOrder(
+  supabase: DB,
+  order_id: string,
+): Promise<void> {
+  const { error } = await supabase.rpc("cancel_order", {
+    p_order_id: order_id,
+  });
+  if (error) throw error;
+}
+
 export async function callCreateOrder(
   supabase: DB,
   args: {

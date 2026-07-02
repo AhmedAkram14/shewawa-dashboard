@@ -691,6 +691,20 @@ export type Database = {
         };
         Returns: undefined;
       };
+      update_order: {
+        Args: {
+          p_order_id: string;
+          p_deposit_amount: number;
+          p_notes: string | null;
+        };
+        Returns: undefined;
+      };
+      cancel_order: {
+        Args: {
+          p_order_id: string;
+        };
+        Returns: undefined;
+      };
     };
 
     Enums: Record<string, never>;
