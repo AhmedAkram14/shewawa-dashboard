@@ -42,14 +42,15 @@ export function CustomerList() {
   return (
     <div className="mx-auto max-w-lg space-y-4 p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
-          Customers
+        <div>
+          <h1 className="text-2xl font-semibold leading-tight">Customers</h1>
           {customers.length > 0 && (
-            <span className="ml-2 text-base font-normal text-muted-foreground">
-              ({customers.length})
-            </span>
+            <p className="mt-0.5 text-sm text-muted-foreground">
+              {customers.length}{" "}
+              {customers.length === 1 ? "customer" : "customers"}
+            </p>
           )}
-        </h1>
+        </div>
         <AddCustomerSheet />
       </div>
 

@@ -57,7 +57,7 @@ export function MoneySummary() {
 
   return (
     <div className="mx-auto max-w-lg space-y-6 p-4">
-      <h1 className="text-xl font-semibold">Money</h1>
+      <h1 className="text-2xl font-semibold leading-tight">Money</h1>
 
       {/* Summary cards */}
       <div className="space-y-2">

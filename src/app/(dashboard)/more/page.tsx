@@ -30,7 +30,7 @@ const LINKS = [
 export default function MorePage() {
   return (
     <div className="mx-auto max-w-lg space-y-4 p-4">
-      <h1 className="text-xl font-semibold">More</h1>
+      <h1 className="text-2xl font-semibold leading-tight">More</h1>
 
       <div className="grid grid-cols-2 gap-3">
         {LINKS.map(({ href, label, icon: Icon }) => (

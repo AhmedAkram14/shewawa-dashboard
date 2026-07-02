@@ -10,7 +10,7 @@ export function DeliveriesList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Deliveries</h1>
+        <h1 className="text-2xl font-semibold leading-tight">Deliveries</h1>
         <CreateDeliverySheet />
       </div>
 

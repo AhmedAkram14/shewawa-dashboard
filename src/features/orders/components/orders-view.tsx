@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { ListingStatusBadge } from "@/features/listings/components/listing-status-badge";
+import type { ListingStatus } from "@/features/listings/schemas";
 import { useAllOrders } from "../hooks/use-orders";
 import type { OrderWithListingInfo } from "../api/orders";
 
@@ -59,40 +60,35 @@ export function OrdersView() {
 
   return (
     <div className="mx-auto max-w-lg space-y-4 p-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">
-          Orders
-          {totalActive > 0 && (
-            <span className="ml-2 text-base font-normal text-muted-foreground">
-              ({totalActive} active)
-            </span>
-          )}
-        </h1>
+      <div>
+        <h1 className="text-2xl font-semibold leading-tight">Orders</h1>
+        {totalActive > 0 && (
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {totalActive} active {totalActive === 1 ? "order" : "orders"}
+          </p>
+        )}
       </div>
 
       {groups.length === 0 ? (
-        <p className="text-center text-sm text-muted-foreground py-12">
+        <p className="py-12 text-center text-sm text-muted-foreground">
           No orders yet. Open a listing to add orders.
         </p>
       ) : (
         <div className="space-y-2">
           {groups.map((g) => (
             <Link key={g.listingId} href={`/listings/${g.listingId}`}>
-              <Card className="hover:bg-accent/50 transition-colors">
-                <CardContent className="p-4 flex items-center justify-between gap-3">
+              <Card className="py-0 hover:bg-accent/50 transition-colors">
+                <CardContent className="flex items-center justify-between gap-3 px-4 py-3">
                   <div className="min-w-0">
-                    <p className="font-medium truncate">{g.productName}</p>
+                    <p className="truncate font-medium">{g.productName}</p>
                     <p className="text-sm text-muted-foreground">
                       {g.activeCount} {g.activeCount === 1 ? "order" : "orders"}{" "}
                       · {g.totalPieces} pcs
                     </p>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 capitalize text-xs"
-                  >
-                    {g.listingStatus.replace(/_/g, " ")}
-                  </Badge>
+                  <ListingStatusBadge
+                    status={g.listingStatus as ListingStatus}
+                  />
                 </CardContent>
               </Card>
             </Link>

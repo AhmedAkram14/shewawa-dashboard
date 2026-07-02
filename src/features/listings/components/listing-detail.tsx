@@ -53,7 +53,9 @@ export function ListingDetail({ id }: { id: string }) {
 
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold">{listing.products.name}</h1>
+        <h1 className="text-2xl font-semibold leading-tight">
+          {listing.products.name}
+        </h1>
         <ListingStatusBadge status={listing.status as ListingStatus} />
       </div>
 

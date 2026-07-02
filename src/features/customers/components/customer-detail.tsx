@@ -60,7 +60,9 @@ export function CustomerDetail({ id }: { id: string }) {
 
       {/* Header */}
       <div className="space-y-0.5">
-        <h1 className="text-xl font-semibold">{customer.name}</h1>
+        <h1 className="text-2xl font-semibold leading-tight">
+          {customer.name}
+        </h1>
         <p className="text-sm text-muted-foreground">{customer.address}</p>
         {customer.phone && (
           <p className="text-sm text-muted-foreground">{customer.phone}</p>

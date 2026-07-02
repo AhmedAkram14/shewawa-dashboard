@@ -44,7 +44,7 @@ export function FactoryDetail({ id }: { id: string }) {
       </Link>
 
       <div className="space-y-0.5">
-        <h1 className="text-xl font-semibold">{factory.name}</h1>
+        <h1 className="text-2xl font-semibold leading-tight">{factory.name}</h1>
         {factory.contact && (
           <p className="text-sm text-muted-foreground">{factory.contact}</p>
         )}

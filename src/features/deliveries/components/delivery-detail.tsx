@@ -56,7 +56,9 @@ export function DeliveryDetail({ id }: { id: string }) {
 
       {/* Header */}
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold">{delivery.customers.name}</h1>
+        <h1 className="text-2xl font-semibold leading-tight">
+          {delivery.customers.name}
+        </h1>
         <div className="flex items-center gap-2">
           <DeliveryStatusBadge status={delivery.status as DeliveryStatus} />
           {delivery.customers.phone && (

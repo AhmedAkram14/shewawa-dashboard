@@ -6,7 +6,7 @@ export const metadata = { title: "Settings" };
 export default function SettingsPage() {
   return (
     <div className="mx-auto max-w-lg space-y-8 p-4">
-      <h1 className="text-xl font-semibold">Settings</h1>
+      <h1 className="text-2xl font-semibold leading-tight">Settings</h1>
 
       <section className="space-y-4 rounded-lg border p-4">
         <h2 className="text-sm font-semibold">Business</h2>

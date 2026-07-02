@@ -50,7 +50,9 @@ export function CollectionDetail({ id }: { id: string }) {
       </Link>
 
       <div className="space-y-0.5">
-        <h1 className="text-xl font-semibold">{collection.name}</h1>
+        <h1 className="text-2xl font-semibold leading-tight">
+          {collection.name}
+        </h1>
         <p className="text-sm text-muted-foreground">
           {collection.listings.length} listing
           {collection.listings.length !== 1 ? "s" : ""}

@@ -27,8 +27,8 @@ export function ListingCard({ listing }: { listing: ListingSummary }) {
 
   return (
     <Link href={`/listings/${listing.id}`}>
-      <Card className="hover:bg-accent/50 transition-colors">
-        <CardContent className="p-4 space-y-2">
+      <Card className="py-0 hover:bg-accent/50 transition-colors">
+        <CardContent className="space-y-1.5 px-4 py-3">
           <div className="flex items-start justify-between gap-2">
             <p className="font-medium leading-tight">{listing.products.name}</p>
             <ListingStatusBadge status={listing.status as ListingStatus} />

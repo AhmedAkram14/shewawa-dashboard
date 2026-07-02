@@ -19,8 +19,8 @@ function TodayHeader() {
 
   return (
     <div className="px-4">
-      <h1 className="text-xl font-semibold">Today</h1>
-      <p className="text-sm text-muted-foreground">{date}</p>
+      <h1 className="text-2xl font-semibold leading-tight">Today</h1>
+      <p className="mt-0.5 text-sm text-muted-foreground">{date}</p>
     </div>
   );
 }

@@ -15,7 +15,9 @@ export function Header() {
       <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       <header className="flex h-12 shrink-0 items-center justify-between border-b px-4">
-        <span className="text-sm font-semibold tracking-tight">SHE WAWA</span>
+        <span className="text-[13px] font-bold tracking-[0.18em] uppercase">
+          SHE WAWA
+        </span>
 
         <div className="flex items-center gap-1">
           <Button

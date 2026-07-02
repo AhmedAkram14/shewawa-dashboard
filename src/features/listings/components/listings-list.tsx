@@ -46,7 +46,7 @@ export function ListingsList() {
   return (
     <div className="mx-auto max-w-lg space-y-6 p-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Listings</h1>
+        <h1 className="text-2xl font-semibold leading-tight">Listings</h1>
         <CreateListingSheet />
       </div>
 
