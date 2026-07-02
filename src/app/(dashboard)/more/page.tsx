@@ -8,6 +8,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+import { SignOutButton } from "@/components/sign-out-button";
+
 export const metadata: Metadata = { title: "More — SHE WAWA" };
 
 const LINKS = [
@@ -21,7 +23,7 @@ const LINKS = [
 
 export default function MorePage() {
   return (
-    <div className="mx-auto max-w-lg space-y-4 p-4">
+    <div className="mx-auto max-w-lg space-y-4 p-4 pb-24">
       <h1 className="text-2xl font-semibold leading-tight">More</h1>
 
       <div className="grid grid-cols-2 gap-3">
@@ -36,6 +38,8 @@ export default function MorePage() {
           </Link>
         ))}
       </div>
+
+      <SignOutButton />
     </div>
   );
 }
