@@ -1,6 +1,6 @@
-import { FactoryDetail } from "@/features/factory-orders/components/factory-detail";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Factory" };
+export const metadata: Metadata = { title: "Factory — SHE WAWA" };
 
 export default async function FactoryPage({
   params,
@@ -8,5 +8,9 @@ export default async function FactoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <FactoryDetail id={id} />;
+  return (
+    <div className="mx-auto max-w-lg p-4">
+      <p className="text-sm text-muted-foreground">{id}</p>
+    </div>
+  );
 }

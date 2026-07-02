@@ -1,29 +1,21 @@
+import type { Metadata } from "next";
 import {
-  BadgeCheck,
   Building2,
-  DollarSign,
   Package,
   PackageCheck,
   Settings,
   ShoppingCart,
-  Tag,
 } from "lucide-react";
 import Link from "next/link";
 
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "More — SHE WAWA",
-};
+export const metadata: Metadata = { title: "More — SHE WAWA" };
 
 const LINKS = [
-  { href: "/listings", label: "Listings", icon: Tag },
+  { href: "/products", label: "Products", icon: PackageCheck },
+  { href: "/factories", label: "Factories", icon: Building2 },
   { href: "/factory-orders", label: "Factory Orders", icon: ShoppingCart },
   { href: "/deliveries", label: "Deliveries", icon: Package },
   { href: "/available-stock", label: "Available Stock", icon: PackageCheck },
-  { href: "/collections", label: "Collections", icon: BadgeCheck },
-  { href: "/factories", label: "Factories", icon: Building2 },
-  { href: "/money", label: "Money", icon: DollarSign },
   { href: "/settings", label: "Settings", icon: Settings },
 ] as const;
 

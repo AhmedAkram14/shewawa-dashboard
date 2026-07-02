@@ -1,22 +1,20 @@
-import { BusinessSettings } from "@/features/settings/components/business-settings";
-import { ProfileSettings } from "@/features/settings/components/profile-settings";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Settings" };
+import { signOut } from "@/app/(auth)/actions";
+import { Button } from "@/components/ui/button";
+
+export const metadata: Metadata = { title: "Settings — SHE WAWA" };
 
 export default function SettingsPage() {
   return (
-    <div className="mx-auto max-w-lg space-y-8 p-4">
+    <div className="mx-auto max-w-lg space-y-6 p-4">
       <h1 className="text-2xl font-semibold leading-tight">Settings</h1>
 
-      <section className="space-y-4 rounded-lg border p-4">
-        <h2 className="text-sm font-semibold">Business</h2>
-        <BusinessSettings />
-      </section>
-
-      <section className="space-y-4 rounded-lg border p-4">
-        <h2 className="text-sm font-semibold">Profile</h2>
-        <ProfileSettings />
-      </section>
+      <form action={signOut}>
+        <Button variant="outline" type="submit" className="w-full">
+          Sign out
+        </Button>
+      </form>
     </div>
   );
 }

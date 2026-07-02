@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
-import { TodayDashboard } from "@/features/today/components/today-dashboard";
-
-export const metadata: Metadata = {
-  title: "Today — SHE WAWA",
-};
+export const metadata: Metadata = { title: "Today — SHE WAWA" };
 
 export default function TodayPage() {
-  return <TodayDashboard />;
+  return (
+    <div className="mx-auto max-w-lg p-4">
+      <h1 className="text-2xl font-semibold leading-tight">Today</h1>
+    </div>
+  );
 }

@@ -1,6 +1,6 @@
-import { CustomerDetail } from "@/features/customers/components/customer-detail";
+import type { Metadata } from "next";
 
-export const metadata = { title: "Customer" };
+export const metadata: Metadata = { title: "Customer — SHE WAWA" };
 
 export default async function CustomerPage({
   params,
@@ -8,5 +8,9 @@ export default async function CustomerPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return <CustomerDetail id={id} />;
+  return (
+    <div className="mx-auto max-w-lg p-4">
+      <p className="text-sm text-muted-foreground">{id}</p>
+    </div>
+  );
 }

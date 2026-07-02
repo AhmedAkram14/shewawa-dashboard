@@ -1,11 +1,8 @@
 "use client";
 
-import { CalendarDays, Grid2x2, Plus, ShoppingBag, Users } from "lucide-react";
+import { CalendarDays, Grid2x2, ShoppingBag, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-
-import { NewOrderSheet } from "@/features/orders/components/new-order-sheet";
 
 const NAV_ITEMS = [
   { href: "/today", label: "Today", icon: CalendarDays },
@@ -16,7 +13,6 @@ const NAV_ITEMS = [
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [newOrderOpen, setNewOrderOpen] = useState(false);
 
   function isActive(href: string) {
     if (href === "/today") return pathname === "/today" || pathname === "/";
@@ -24,55 +20,19 @@ export function BottomNav() {
   }
 
   return (
-    <>
-      <NewOrderSheet open={newOrderOpen} onOpenChange={setNewOrderOpen} />
-
-      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background safe-area-pb">
-        <div className="mx-auto grid max-w-lg grid-cols-5 items-end">
-          {/* Today */}
+    <nav className="fixed bottom-0 left-0 right-0 z-40 border-t bg-background safe-area-pb">
+      <div className="mx-auto grid max-w-lg grid-cols-4 items-end">
+        {NAV_ITEMS.map(({ href, label, icon }) => (
           <NavItem
-            href={NAV_ITEMS[0].href}
-            label={NAV_ITEMS[0].label}
-            icon={NAV_ITEMS[0].icon}
-            active={isActive(NAV_ITEMS[0].href)}
+            key={href}
+            href={href}
+            label={label}
+            icon={icon}
+            active={isActive(href)}
           />
-          {/* Orders */}
-          <NavItem
-            href={NAV_ITEMS[1].href}
-            label={NAV_ITEMS[1].label}
-            icon={NAV_ITEMS[1].icon}
-            active={isActive(NAV_ITEMS[1].href)}
-          />
-
-          {/* Center: New Order */}
-          <div className="flex justify-center py-2">
-            <button
-              type="button"
-              aria-label="New Order"
-              onClick={() => setNewOrderOpen(true)}
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground transition-opacity hover:opacity-90 active:opacity-75"
-            >
-              <Plus className="h-6 w-6" />
-            </button>
-          </div>
-
-          {/* Customers */}
-          <NavItem
-            href={NAV_ITEMS[2].href}
-            label={NAV_ITEMS[2].label}
-            icon={NAV_ITEMS[2].icon}
-            active={isActive(NAV_ITEMS[2].href)}
-          />
-          {/* More */}
-          <NavItem
-            href={NAV_ITEMS[3].href}
-            label={NAV_ITEMS[3].label}
-            icon={NAV_ITEMS[3].icon}
-            active={isActive(NAV_ITEMS[3].href)}
-          />
-        </div>
-      </nav>
-    </>
+        ))}
+      </div>
+    </nav>
   );
 }
 

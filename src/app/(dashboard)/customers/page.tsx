@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
-import { CustomerList } from "@/features/customers/components/customer-list";
-
-export const metadata: Metadata = {
-  title: "Customers — SHE WAWA",
-};
+export const metadata: Metadata = { title: "Customers — SHE WAWA" };
 
 export default function CustomersPage() {
-  return <CustomerList />;
+  return (
+    <div className="mx-auto max-w-lg p-4">
+      <h1 className="text-2xl font-semibold leading-tight">Customers</h1>
+    </div>
+  );
 }

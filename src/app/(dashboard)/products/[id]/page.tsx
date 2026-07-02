@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Delivery — SHE WAWA" };
+export const metadata: Metadata = { title: "Product — SHE WAWA" };
 
-export default async function DeliveryPage({
+export default async function ProductPage({
   params,
 }: {
   params: Promise<{ id: string }>;
