@@ -9,6 +9,7 @@ import {
   deleteProduct,
   createProductWithVariants,
 } from "../api/products";
+import type { ProductRow } from "@/lib/supabase/database.types";
 import type { CreateProductInput, UpdateProductInput } from "../schemas";
 import type { CreateProductWithVariantsInput } from "../api/products";
 
@@ -54,7 +55,14 @@ export function useCreateProductWithVariants() {
   return useMutation({
     mutationFn: (input: CreateProductWithVariantsInput) =>
       createProductWithVariants(createClient(), input),
-    onSuccess: () => {
+    onSuccess: (newProduct) => {
+      // Immediately inject into cache so the dropdown reflects the new product
+      // without waiting for the background refetch to complete.
+      qc.setQueryData<ProductRow[]>(["products"], (existing = []) => [
+        newProduct,
+        ...existing,
+      ]);
+      // Background refetch for eventual consistency (server order, timestamps)
       qc.invalidateQueries({ queryKey: ["products"] });
     },
   });

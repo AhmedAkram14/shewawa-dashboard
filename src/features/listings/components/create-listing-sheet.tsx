@@ -24,6 +24,7 @@ import { useCollections } from "../hooks/use-collections";
 import { useCreateListing } from "../hooks/use-listing-mutations";
 import { createListingSchema } from "../schemas";
 import { CreateProductInlineSheet } from "./create-product-inline-sheet";
+import { getErrorMessage } from "@/lib/get-error-message";
 
 export function CreateListingSheet() {
   const [open, setOpen] = useState(false);
@@ -66,7 +67,7 @@ export function CreateListingSheet() {
       setClosesOn("");
       setThreshold("");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create listing");
+      setError(getErrorMessage(err, "Failed to create listing"));
     }
   }
 

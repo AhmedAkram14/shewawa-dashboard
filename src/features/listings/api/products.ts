@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import type { Database } from "@/lib/supabase/database.types";
+import type { ProductRow } from "@/lib/supabase/database.types";
 import type { CreateProductInput, UpdateProductInput } from "../schemas";
 
 type Client = SupabaseClient<Database>;
@@ -103,5 +104,6 @@ export async function createProductWithVariants(
     },
   );
   if (error) throw error;
-  return data as unknown as { id: string; name: string };
+  // to_jsonb(v_product) returns all columns of the products row
+  return data as unknown as ProductRow;
 }

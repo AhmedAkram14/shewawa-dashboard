@@ -139,9 +139,8 @@ export function CreateProductInlineSheet({
         })),
       });
 
-      onSuccess(product);
       reset();
-      onOpenChange(false);
+      onSuccess(product);
     } catch (err) {
       setError(getErrorMessage(err, "Failed to create product"));
     }
@@ -226,7 +225,7 @@ export function CreateProductInlineSheet({
                       <button
                         type="button"
                         onClick={() => removeVariant(v.id)}
-                        className="text-muted-foreground hover:text-destructive transition-colors"
+                        className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground hover:text-destructive transition-colors"
                         aria-label="Remove variant"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
