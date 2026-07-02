@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
+import { createClient } from "@/lib/supabase/server";
+import { getProducts } from "@/features/products/api/products";
+import { ProductsView } from "@/features/products/components/products-view";
+
 export const metadata: Metadata = { title: "Products — SHE WAWA" };
 
-export default function ProductsPage() {
-  return (
-    <div className="mx-auto max-w-lg p-4">
-      <h1 className="text-2xl font-semibold leading-tight">Products</h1>
-    </div>
-  );
+export default async function ProductsPage() {
+  const supabase = await createClient();
+  const products = await getProducts(supabase);
+
+  return <ProductsView initialData={products} />;
 }
