@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import { getFactoryOrder } from "@/features/factory-orders/api/factory-orders";
+import { FactoryOrderDetailView } from "@/features/factory-orders/components/factory-order-detail-view";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Factory Order — SHE WAWA" };
 
@@ -8,9 +13,12 @@ export default async function FactoryOrderPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return (
-    <div className="mx-auto max-w-lg p-4">
-      <p className="text-sm text-muted-foreground">{id}</p>
-    </div>
-  );
+  const supabase = await createClient();
+
+  try {
+    const order = await getFactoryOrder(supabase, id);
+    return <FactoryOrderDetailView id={id} initialData={order} />;
+  } catch {
+    notFound();
+  }
 }

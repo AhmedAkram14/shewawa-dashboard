@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
+import { getFactoryOrders } from "@/features/factory-orders/api/factory-orders";
+import { FactoryOrdersView } from "@/features/factory-orders/components/factory-orders-view";
+import { createClient } from "@/lib/supabase/server";
+
 export const metadata: Metadata = { title: "Factory Orders — SHE WAWA" };
 
-export default function FactoryOrdersPage() {
-  return (
-    <div className="mx-auto max-w-lg p-4">
-      <h1 className="text-2xl font-semibold leading-tight">Factory Orders</h1>
-    </div>
-  );
+export default async function FactoryOrdersPage() {
+  const supabase = await createClient();
+  const orders = await getFactoryOrders(supabase);
+
+  return <FactoryOrdersView initialData={orders} />;
 }

@@ -674,6 +674,14 @@ export type Database = {
         };
         Returns: string;
       };
+      create_factory_order: {
+        Args: {
+          p_factory_id: string;
+          p_notes: string | null;
+          p_groups: Json;
+        };
+        Returns: string;
+      };
     };
 
     Enums: Record<string, never>;
