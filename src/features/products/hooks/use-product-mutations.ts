@@ -18,12 +18,11 @@ import type {
 } from "../schemas";
 import { productKeys } from "./use-products";
 
-export function useCreateProduct(businessId: string) {
+export function useCreateProduct() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateProductInput) =>
       createProduct(createClient(), {
-        business_id: businessId,
         name: input.name,
         description: input.description ?? null,
       }),
@@ -46,13 +45,12 @@ export function useUpdateProduct(productId: string) {
   });
 }
 
-export function useCreateVariant(productId: string, businessId: string) {
+export function useCreateVariant(productId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (input: VariantInput) =>
       createVariant(createClient(), {
         product_id: productId,
-        business_id: businessId,
         name: input.name,
         sku: input.sku?.trim() || null,
         cost_price: Math.round(input.cost_price_egp * 100),

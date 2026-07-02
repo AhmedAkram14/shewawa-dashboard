@@ -10,6 +10,12 @@
  * All monetary values (unit_price, deposit_amount, cost_price, selling_price)
  * are stored as integers (piastres — smallest currency unit) to avoid
  * floating-point rounding and PostgREST numeric→string coercion.
+ *
+ * business_id convention (migration 019):
+ *   - Every business-owned table has DEFAULT get_my_business_id() on business_id.
+ *   - Insert: business_id is optional (DB fills it from JWT context).
+ *   - Update: business_id is omitted entirely (immutable after insertion;
+ *     enforced by RLS WITH CHECK and absent from the TypeScript Update type).
  */
 
 export type Database = {
@@ -56,7 +62,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           role?: "owner" | "staff" | "viewer";
           full_name?: string | null;
           created_at?: string;
@@ -86,7 +91,6 @@ export type Database = {
           delivery_count?: number;
         };
         Update: {
-          business_id?: string;
           order_count?: number;
           factory_order_count?: number;
           delivery_count?: number;
@@ -117,7 +121,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           name: string;
           description?: string | null;
           image_url?: string | null;
@@ -127,7 +131,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           name?: string;
           description?: string | null;
           image_url?: string | null;
@@ -161,7 +164,7 @@ export type Database = {
         Insert: {
           id?: string;
           product_id: string;
-          business_id: string;
+          business_id?: string;
           name: string;
           sku?: string | null;
           cost_price?: number;
@@ -172,7 +175,6 @@ export type Database = {
         Update: {
           id?: string;
           product_id?: string;
-          business_id?: string;
           name?: string;
           sku?: string | null;
           cost_price?: number;
@@ -213,7 +215,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           name: string;
           address: string;
           phone?: string | null;
@@ -223,7 +225,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           name?: string;
           address?: string;
           phone?: string | null;
@@ -256,7 +257,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           name: string;
           contact?: string | null;
           notes?: string | null;
@@ -265,7 +266,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           name?: string;
           contact?: string | null;
           notes?: string | null;
@@ -298,7 +298,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           delivery_number: number;
           status?: "pending" | "dispatched" | "completed";
           dispatched_at?: string | null;
@@ -308,7 +308,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           delivery_number?: number;
           status?: "pending" | "dispatched" | "completed";
           dispatched_at?: string | null;
@@ -342,7 +341,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           factory_order_number: number;
           factory_id: string;
           status?: "open" | "closed";
@@ -352,7 +351,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           factory_order_number?: number;
           factory_id?: string;
           status?: "open" | "closed";
@@ -441,7 +439,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           order_number: number;
           customer_id: string;
           status?:
@@ -459,7 +457,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           order_number?: number;
           customer_id?: string;
           status?:
@@ -624,7 +621,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
-          business_id: string;
+          business_id?: string;
           product_variant_id: string;
           quantity: number;
           source: "factory_surplus" | "cancellation" | "manual";
@@ -633,7 +630,6 @@ export type Database = {
         };
         Update: {
           id?: string;
-          business_id?: string;
           product_variant_id?: string;
           quantity?: number;
           source?: "factory_surplus" | "cancellation" | "manual";

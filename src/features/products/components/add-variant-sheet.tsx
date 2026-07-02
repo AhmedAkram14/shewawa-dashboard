@@ -20,21 +20,15 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   productId: string;
-  businessId: string;
 }
 
-export function AddVariantSheet({
-  open,
-  onOpenChange,
-  productId,
-  businessId,
-}: Props) {
+export function AddVariantSheet({ open, onOpenChange, productId }: Props) {
   const [name, setName] = useState("");
   const [sku, setSku] = useState("");
   const [costPrice, setCostPrice] = useState("");
   const [sellingPrice, setSellingPrice] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const create = useCreateVariant(productId, businessId);
+  const create = useCreateVariant(productId);
 
   function reset() {
     setName("");

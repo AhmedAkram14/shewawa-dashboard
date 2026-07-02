@@ -19,14 +19,13 @@ import { createProductSchema } from "../schemas";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  businessId: string;
 }
 
-export function AddProductSheet({ open, onOpenChange, businessId }: Props) {
+export function AddProductSheet({ open, onOpenChange }: Props) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const create = useCreateProduct(businessId);
+  const create = useCreateProduct();
 
   function reset() {
     setName("");

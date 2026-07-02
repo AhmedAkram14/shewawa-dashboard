@@ -40,19 +40,11 @@ export async function getProduct(
 
 export async function createProduct(
   supabase: DB,
-  input: {
-    business_id: string;
-    name: string;
-    description?: string | null;
-  },
+  input: { name: string; description?: string | null },
 ): Promise<ProductRow> {
   const { data, error } = await supabase
     .from("products")
-    .insert({
-      business_id: input.business_id,
-      name: input.name,
-      description: input.description ?? null,
-    })
+    .insert({ name: input.name, description: input.description ?? null })
     .select()
     .single();
   if (error) throw error;
@@ -78,7 +70,6 @@ export async function createVariant(
   supabase: DB,
   input: {
     product_id: string;
-    business_id: string;
     name: string;
     sku: string | null;
     cost_price: number;

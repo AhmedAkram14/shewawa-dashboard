@@ -7,7 +7,6 @@ import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useBusinessId } from "@/hooks/use-business-id";
 import { formatPrice } from "@/lib/format";
 import type { Database } from "@/lib/supabase/database.types";
 
@@ -27,7 +26,6 @@ interface Props {
 
 export function ProductDetailView({ id, initialData }: Props) {
   const { data: product } = useProduct(id, initialData);
-  const { data: businessId } = useBusinessId();
   const toggleActive = useUpdateProduct(id);
   const [editOpen, setEditOpen] = useState(false);
   const [addVariantOpen, setAddVariantOpen] = useState(false);
@@ -86,12 +84,10 @@ export function ProductDetailView({ id, initialData }: Props) {
         <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Variants
         </h2>
-        {businessId && (
-          <Button size="xs" onClick={() => setAddVariantOpen(true)}>
-            <Plus />
-            Add
-          </Button>
-        )}
+        <Button size="xs" onClick={() => setAddVariantOpen(true)}>
+          <Plus />
+          Add
+        </Button>
       </div>
 
       {product.product_variants.length === 0 ? (
@@ -134,14 +130,11 @@ export function ProductDetailView({ id, initialData }: Props) {
         product={product}
       />
 
-      {businessId && (
-        <AddVariantSheet
-          open={addVariantOpen}
-          onOpenChange={setAddVariantOpen}
-          productId={id}
-          businessId={businessId}
-        />
-      )}
+      <AddVariantSheet
+        open={addVariantOpen}
+        onOpenChange={setAddVariantOpen}
+        productId={id}
+      />
 
       {editingVariant && (
         <EditVariantSheet
