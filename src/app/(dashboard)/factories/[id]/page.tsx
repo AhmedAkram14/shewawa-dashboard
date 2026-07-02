@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import { getFactory } from "@/features/factories/api/factories";
+import { FactoryDetailView } from "@/features/factories/components/factory-detail-view";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Factory — SHE WAWA" };
 
@@ -8,9 +13,12 @@ export default async function FactoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  return (
-    <div className="mx-auto max-w-lg p-4">
-      <p className="text-sm text-muted-foreground">{id}</p>
-    </div>
-  );
+  const supabase = await createClient();
+
+  try {
+    const factory = await getFactory(supabase, id);
+    return <FactoryDetailView id={id} initialData={factory} />;
+  } catch {
+    notFound();
+  }
 }
