@@ -1,3 +1,5 @@
+"use client";
+
 import { SearchButton } from "@/components/search/search-button";
 
 export function Header() {

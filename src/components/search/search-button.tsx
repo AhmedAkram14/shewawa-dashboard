@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,10 @@ import { SearchOverlay } from "./search-overlay";
 
 export function SearchButton() {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Portal requires document — only available after hydration
+  useEffect(() => setMounted(true), []);
 
   return (
     <>
@@ -20,7 +25,12 @@ export function SearchButton() {
         <Search className="h-4 w-4" />
       </Button>
 
-      {open && <SearchOverlay onClose={() => setOpen(false)} />}
+      {mounted &&
+        open &&
+        createPortal(
+          <SearchOverlay onClose={() => setOpen(false)} />,
+          document.body,
+        )}
     </>
   );
 }
