@@ -1,6 +1,7 @@
 "use client";
 
-import { PackageCheck, Plus } from "lucide-react";
+import { ArrowLeft, PackageCheck, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -59,6 +60,7 @@ const SOURCE_CONFIG = {
 };
 
 export function AvailableStockView({ initialData }: Props) {
+  const router = useRouter();
   const { data: stock = [] } = useAvailableStock(initialData);
   const [allocating, setAllocating] = useState<StockEntry | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -67,8 +69,11 @@ export function AvailableStockView({ initialData }: Props) {
 
   return (
     <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold leading-tight">
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ArrowLeft />
+        </Button>
+        <h1 className="flex-1 text-2xl font-semibold leading-tight">
           Available Stock
         </h1>
         <Button size="sm" onClick={() => setAddOpen(true)}>

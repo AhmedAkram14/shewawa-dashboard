@@ -1,7 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
 import {
+  ArrowLeft,
   Banknote,
   CircleDot,
   CheckCircle2,
@@ -114,6 +118,7 @@ function StatusRow({
 }
 
 export function MoneyView({ report }: { report: MoneyReport }) {
+  const router = useRouter();
   const activeStatuses = STATUS_ORDER.filter((s) => report.by_status[s]);
   const costsFullyUnknown =
     report.factory_cost_lines_unknown > 0 && report.factory_cost_agreed === 0;
@@ -129,14 +134,19 @@ export function MoneyView({ report }: { report: MoneyReport }) {
 
   return (
     <div className="mx-auto max-w-lg space-y-6 p-4 pb-24">
-      <div>
-        <h1 className="text-2xl font-semibold leading-tight">Money</h1>
-        <p className="text-sm text-muted-foreground">
-          {report.active_order_count > 0
-            ? `${report.active_order_count} order${report.active_order_count !== 1 ? "s" : ""} in pipeline · `
-            : "No orders in pipeline · "}
-          all-time cash flow
-        </p>
+      <div className="flex items-start gap-2">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ArrowLeft />
+        </Button>
+        <div>
+          <h1 className="text-2xl font-semibold leading-tight">Money</h1>
+          <p className="text-sm text-muted-foreground">
+            {report.active_order_count > 0
+              ? `${report.active_order_count} order${report.active_order_count !== 1 ? "s" : ""} in pipeline · `
+              : "No orders in pipeline · "}
+            all-time cash flow
+          </p>
+        </div>
       </div>
 
       {/* ── Customer side ──────────────────────────────────────────────── */}
