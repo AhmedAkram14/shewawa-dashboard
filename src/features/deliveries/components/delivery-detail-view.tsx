@@ -2,6 +2,7 @@
 
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function DeliveryDetailView({ id, initialData }: Props) {
+  const router = useRouter();
   const { data: delivery } = useDelivery(id, initialData);
   const dispatchMutation = useDispatchDelivery(id);
 
@@ -59,12 +61,7 @@ export function DeliveryDetailView({ id, initialData }: Props) {
     <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          nativeButton={false}
-          render={<Link href="/deliveries" />}
-        >
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />
         </Button>
         <div className="flex flex-1 items-center justify-between">

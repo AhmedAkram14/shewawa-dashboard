@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, Pencil } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export function CustomerDetailView({ id, initialData }: Props) {
+  const router = useRouter();
   const { data: customer } = useCustomer(id, initialData);
   const [editOpen, setEditOpen] = useState(false);
 
@@ -26,12 +27,7 @@ export function CustomerDetailView({ id, initialData }: Props) {
     <div className="mx-auto max-w-lg p-4">
       {/* Header */}
       <div className="mb-4 flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          nativeButton={false}
-          render={<Link href="/customers" />}
-        >
+        <Button variant="ghost" size="icon-sm" onClick={() => router.back()}>
           <ChevronLeft />
         </Button>
         <h1 className="flex-1 text-xl font-semibold leading-tight">

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -33,6 +33,7 @@ type DraftLine = {
 };
 
 export function NewOrderView() {
+  const router = useRouter();
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerRow | null>(
     null,
   );
@@ -115,12 +116,7 @@ export function NewOrderView() {
     <div className="mx-auto max-w-lg space-y-6 p-4 pb-32">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          nativeButton={false}
-          render={<Link href="/orders" />}
-        >
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />
         </Button>
         <h1 className="text-2xl font-semibold leading-tight">New Order</h1>

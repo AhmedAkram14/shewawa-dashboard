@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ type VariantGroup = {
 };
 
 export function NewFactoryOrderView() {
+  const router = useRouter();
   const [selectedFactory, setSelectedFactory] = useState<FactoryRow | null>(
     null,
   );
@@ -145,12 +147,7 @@ export function NewFactoryOrderView() {
     <div className="mx-auto max-w-lg space-y-6 p-4 pb-32">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          nativeButton={false}
-          render={<Link href="/factory-orders" />}
-        >
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />
         </Button>
         <h1 className="text-2xl font-semibold leading-tight">

@@ -2,6 +2,7 @@
 
 import { ArrowLeft, Pencil } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,7 @@ interface Props {
 }
 
 export function OrderDetailView({ id, initialData }: Props) {
+  const router = useRouter();
   const { data: order } = useOrder(id, initialData);
   const [editOpen, setEditOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -87,12 +89,7 @@ export function OrderDetailView({ id, initialData }: Props) {
     <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          nativeButton={false}
-          render={<Link href="/orders" />}
-        >
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />
         </Button>
         <div className="flex flex-1 items-center justify-between">

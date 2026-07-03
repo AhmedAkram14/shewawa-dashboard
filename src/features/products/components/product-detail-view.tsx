@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, Pencil, Plus } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ interface Props {
 }
 
 export function ProductDetailView({ id, initialData }: Props) {
+  const router = useRouter();
   const { data: product } = useProduct(id, initialData);
   const toggleActive = useUpdateProduct(id);
   const [editOpen, setEditOpen] = useState(false);
@@ -37,12 +38,7 @@ export function ProductDetailView({ id, initialData }: Props) {
     <div className="mx-auto max-w-lg p-4">
       {/* Header */}
       <div className="mb-3 flex items-center gap-1">
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          nativeButton={false}
-          render={<Link href="/products" />}
-        >
+        <Button variant="ghost" size="icon-sm" onClick={() => router.back()}>
           <ChevronLeft />
         </Button>
         <h1 className="flex-1 text-xl font-semibold leading-tight">

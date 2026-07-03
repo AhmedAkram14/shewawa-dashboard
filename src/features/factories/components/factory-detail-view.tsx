@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowLeft, Pencil } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ interface Props {
 }
 
 export function FactoryDetailView({ id, initialData }: Props) {
+  const router = useRouter();
   const { data: factory } = useFactory(id, initialData);
   const [editOpen, setEditOpen] = useState(false);
 
@@ -25,12 +26,7 @@ export function FactoryDetailView({ id, initialData }: Props) {
   return (
     <div className="mx-auto max-w-lg space-y-5 p-4">
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          nativeButton={false}
-          render={<Link href="/factories" />}
-        >
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft />
         </Button>
         <div className="flex flex-1 items-center justify-between">
