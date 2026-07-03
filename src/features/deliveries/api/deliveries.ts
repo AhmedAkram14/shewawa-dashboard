@@ -38,7 +38,7 @@ export async function getDeliveries(
 ): Promise<DeliveryWithOrderCount[]> {
   const { data, error } = await supabase
     .from("deliveries")
-    .select("*, orders(id)")
+    .select("*, orders!orders_delivery_id_fkey(id)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data as DeliveryWithOrderCount[];
@@ -51,7 +51,7 @@ export async function getDelivery(
   const { data, error } = await supabase
     .from("deliveries")
     .select(
-      `*, orders(
+      `*, orders!orders_delivery_id_fkey(
         id, order_number, status, deposit_amount, delivered_at,
         customers(id, name),
         order_lines(quantity, unit_price)
