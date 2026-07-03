@@ -610,6 +610,45 @@ export type Database = {
         ];
       };
 
+      // ── Delivery order results ──────────────────────────────────────────────
+
+      delivery_order_results: {
+        Row: {
+          delivery_id: string;
+          order_id: string;
+          outcome: "delivered" | "failed";
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          delivery_id: string;
+          order_id: string;
+          outcome: "delivered" | "failed";
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          outcome?: "delivered" | "failed";
+          notes?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "delivery_order_results_delivery_id_fkey";
+            columns: ["delivery_id"];
+            isOneToOne: false;
+            referencedRelation: "deliveries";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "delivery_order_results_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
       // ── Available stock ─────────────────────────────────────────────────────
 
       available_stock: {
@@ -721,6 +760,7 @@ export type Database = {
       complete_delivery: {
         Args: {
           p_delivery_id: string;
+          p_failed_order_ids?: string[];
         };
         Returns: undefined;
       };

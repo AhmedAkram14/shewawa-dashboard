@@ -12,7 +12,8 @@ export function useCompleteDelivery(deliveryId: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: () => callCompleteDelivery(createClient(), deliveryId),
+    mutationFn: (args: { failedOrderIds: string[] } = { failedOrderIds: [] }) =>
+      callCompleteDelivery(createClient(), deliveryId, args.failedOrderIds),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: deliveryKeys.all });
       queryClient.invalidateQueries({

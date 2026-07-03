@@ -98,9 +98,11 @@ export async function callDispatchDelivery(
 export async function callCompleteDelivery(
   supabase: DB,
   deliveryId: string,
+  failedOrderIds: string[] = [],
 ): Promise<void> {
   const { error } = await supabase.rpc("complete_delivery", {
     p_delivery_id: deliveryId,
+    p_failed_order_ids: failedOrderIds,
   });
   if (error) throw error;
 }

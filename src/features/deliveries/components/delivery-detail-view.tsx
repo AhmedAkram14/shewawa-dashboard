@@ -11,7 +11,7 @@ import { formatPrice } from "@/lib/format";
 import type { DeliveryDetail } from "../api/deliveries";
 import { useDelivery } from "../hooks/use-deliveries";
 import { useDispatchDelivery } from "../hooks/use-dispatch-delivery";
-import { useCompleteDelivery } from "../hooks/use-complete-delivery";
+import { CompleteDeliverySheet } from "./complete-delivery-sheet";
 import { DeliveryStatusBadge } from "./delivery-status-badge";
 
 interface Props {
@@ -22,10 +22,9 @@ interface Props {
 export function DeliveryDetailView({ id, initialData }: Props) {
   const { data: delivery } = useDelivery(id, initialData);
   const dispatchMutation = useDispatchDelivery(id);
-  const completeMutation = useCompleteDelivery(id);
 
   const [dispatchError, setDispatchError] = useState<string | null>(null);
-  const [completeError, setCompleteError] = useState<string | null>(null);
+  const [completeOpen, setCompleteOpen] = useState(false);
 
   if (!delivery) return null;
 
@@ -52,13 +51,6 @@ export function DeliveryDetailView({ id, initialData }: Props) {
     setDispatchError(null);
     dispatchMutation.mutate(undefined, {
       onError: (err) => setDispatchError(err.message),
-    });
-  }
-
-  function handleComplete() {
-    setCompleteError(null);
-    completeMutation.mutate(undefined, {
-      onError: (err) => setCompleteError(err.message),
     });
   }
 
@@ -177,17 +169,12 @@ export function DeliveryDetailView({ id, initialData }: Props) {
             {dispatchError && (
               <p className="text-sm text-destructive">{dispatchError}</p>
             )}
-            {completeError && (
-              <p className="text-sm text-destructive">{completeError}</p>
-            )}
             {canDispatch && (
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={handleDispatch}
-                disabled={
-                  dispatchMutation.isPending || completeMutation.isPending
-                }
+                disabled={dispatchMutation.isPending}
               >
                 {dispatchMutation.isPending
                   ? "Dispatching…"
@@ -197,17 +184,22 @@ export function DeliveryDetailView({ id, initialData }: Props) {
             {canComplete && (
               <Button
                 className="w-full"
-                onClick={handleComplete}
-                disabled={
-                  dispatchMutation.isPending || completeMutation.isPending
-                }
+                onClick={() => setCompleteOpen(true)}
+                disabled={dispatchMutation.isPending}
               >
-                {completeMutation.isPending ? "Completing…" : "Mark Delivered"}
+                Complete Delivery
               </Button>
             )}
           </div>
         </>
       )}
+
+      <CompleteDeliverySheet
+        open={completeOpen}
+        onOpenChange={setCompleteOpen}
+        deliveryId={id}
+        orders={delivery.orders}
+      />
     </div>
   );
 }
