@@ -4,16 +4,22 @@ import type { FactoryOrderRow } from "../api/factory-orders";
 
 type FOStatus = FactoryOrderRow["status"];
 
-const LABELS: Record<FOStatus, string> = {
-  open: "Open",
-  closed: "Closed",
-};
-
-const VARIANTS: Record<FOStatus, "default" | "secondary" | "outline"> = {
-  open: "default",
-  closed: "outline",
+const STATUS_CONFIG: Record<FOStatus, { label: string; className: string }> = {
+  open: {
+    label: "Open",
+    className: "bg-blue-50 text-blue-700 border-blue-200",
+  },
+  closed: {
+    label: "Closed",
+    className: "bg-green-50 text-green-700 border-green-200",
+  },
 };
 
 export function FactoryOrderStatusBadge({ status }: { status: FOStatus }) {
-  return <Badge variant={VARIANTS[status]}>{LABELS[status]}</Badge>;
+  const cfg = STATUS_CONFIG[status];
+  return (
+    <Badge variant="outline" className={cfg.className}>
+      {cfg.label}
+    </Badge>
+  );
 }
