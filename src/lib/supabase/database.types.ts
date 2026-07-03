@@ -724,6 +724,26 @@ export type Database = {
         };
         Returns: undefined;
       };
+      allocate_from_stock: {
+        Args: {
+          p_stock_id: string;
+          p_order_line_id: string;
+          p_quantity: number;
+        };
+        Returns: undefined;
+      };
+      add_manual_stock: {
+        Args: {
+          p_product_variant_id: string;
+          p_quantity: number;
+          p_notes: string | null;
+        };
+        Returns: undefined;
+      };
+      get_today_summary: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
     };
 
     Enums: Record<string, never>;

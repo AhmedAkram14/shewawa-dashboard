@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
+import { createClient } from "@/lib/supabase/server";
+import { getAvailableStock } from "@/features/available-stock/api/available-stock";
+import { AvailableStockView } from "@/features/available-stock/components/available-stock-view";
+
 export const metadata: Metadata = { title: "Available Stock — SHE WAWA" };
 
-export default function AvailableStockPage() {
-  return (
-    <div className="mx-auto max-w-lg p-4">
-      <h1 className="text-2xl font-semibold leading-tight">Available Stock</h1>
-    </div>
-  );
+export default async function AvailableStockPage() {
+  const supabase = await createClient();
+  const stock = await getAvailableStock(supabase);
+
+  return <AvailableStockView initialData={stock} />;
 }
