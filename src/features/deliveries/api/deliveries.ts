@@ -9,7 +9,7 @@ type DeliveryRow = Database["public"]["Tables"]["deliveries"]["Row"];
 export type { DeliveryRow };
 
 export type DeliveryWithOrderCount = DeliveryRow & {
-  orders: { id: string }[];
+  orders: { id: string; customers: { name: string } }[];
 };
 
 export type DeliveryOrderSummary = {
@@ -38,7 +38,7 @@ export async function getDeliveries(
 ): Promise<DeliveryWithOrderCount[]> {
   const { data, error } = await supabase
     .from("deliveries")
-    .select("*, orders!orders_delivery_id_fkey(id)")
+    .select("*, orders!orders_delivery_id_fkey(id, customers(name))")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data as DeliveryWithOrderCount[];

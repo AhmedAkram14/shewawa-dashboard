@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/format";
 
 import { AddProductSheet } from "./add-product-sheet";
 import { useProducts } from "../hooks/use-products";
@@ -45,27 +46,46 @@ export function ProductsView({ initialData }: Props) {
         </div>
       ) : (
         <ul className="divide-y">
-          {products.map((product) => (
-            <li key={product.id}>
-              <Link
-                href={`/products/${product.id}`}
-                className="flex items-center justify-between py-3 transition-colors hover:text-foreground"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">{product.name}</span>
-                  {!product.is_active && (
-                    <Badge variant="secondary">Inactive</Badge>
+          {products.map((product) => {
+            const variants = product.product_variants;
+            const prices = variants.map((v) => v.selling_price);
+            const minPrice = prices.length ? Math.min(...prices) : null;
+            const maxPrice = prices.length ? Math.max(...prices) : null;
+            return (
+              <li key={product.id}>
+                <Link
+                  href={`/products/${product.id}`}
+                  className="block py-3 transition-colors"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-semibold">{product.name}</span>
+                    {!product.is_active && (
+                      <Badge variant="secondary">Inactive</Badge>
+                    )}
+                  </div>
+                  {variants.length > 0 ? (
+                    <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>{variants.map((v) => v.name).join(" · ")}</span>
+                      {minPrice != null && (
+                        <>
+                          <span>—</span>
+                          <span>
+                            {minPrice === maxPrice
+                              ? `EGP ${formatPrice(minPrice)}`
+                              : `EGP ${formatPrice(minPrice)} – ${formatPrice(maxPrice!)}`}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      No variants yet
+                    </p>
                   )}
-                </div>
-                <span className="text-sm text-muted-foreground">
-                  {product.product_variants.length}{" "}
-                  {product.product_variants.length === 1
-                    ? "variant"
-                    : "variants"}
-                </span>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
 

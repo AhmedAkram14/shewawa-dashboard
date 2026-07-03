@@ -13,6 +13,7 @@ export type { FactoryOrderRow, FactoryOrderLineRow };
 
 export type FactoryOrderWithFactory = FactoryOrderRow & {
   factories: { id: string; name: string };
+  factory_order_lines: { quantity: number; unit_cost: number | null }[];
 };
 
 export type ReceiptRecord = {
@@ -77,7 +78,7 @@ export async function getFactoryOrders(
 ): Promise<FactoryOrderWithFactory[]> {
   const { data, error } = await supabase
     .from("factory_orders")
-    .select("*, factories(id, name)")
+    .select("*, factories(id, name), factory_order_lines(quantity, unit_cost)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data as FactoryOrderWithFactory[];

@@ -83,6 +83,10 @@ export function DeliveriesView({ initialData }: Props) {
 
 function DeliveryRow({ delivery }: { delivery: DeliveryWithOrderCount }) {
   const orderCount = delivery.orders.length;
+  const customerNames = delivery.orders
+    .map((o) => o.customers.name)
+    .filter(Boolean)
+    .join(", ");
   const date = new Date(delivery.created_at).toLocaleDateString("en-EG", {
     day: "numeric",
     month: "short",
@@ -92,15 +96,20 @@ function DeliveryRow({ delivery }: { delivery: DeliveryWithOrderCount }) {
     <li>
       <Link
         href={`/deliveries/${delivery.id}`}
-        className="flex items-center justify-between p-3 hover:bg-muted/40"
+        className="block p-3 hover:bg-muted/40"
       >
-        <div>
-          <p className="font-medium">Delivery #{delivery.delivery_number}</p>
-          <p className="text-sm text-muted-foreground">
-            {date} · {orderCount} order{orderCount !== 1 ? "s" : ""}
-          </p>
+        <div className="flex items-start justify-between gap-2">
+          <span className="font-semibold">
+            Delivery #{delivery.delivery_number}
+          </span>
+          <DeliveryStatusBadge status={delivery.status} />
         </div>
-        <DeliveryStatusBadge status={delivery.status} />
+        <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
+          {customerNames && <span className="truncate">{customerNames}</span>}
+          <span className="ml-auto shrink-0 text-xs">
+            {date} · {orderCount} order{orderCount !== 1 ? "s" : ""}
+          </span>
+        </div>
       </Link>
     </li>
   );

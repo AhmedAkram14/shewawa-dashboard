@@ -7,7 +7,7 @@ type ProductRow = Database["public"]["Tables"]["products"]["Row"];
 type VariantRow = Database["public"]["Tables"]["product_variants"]["Row"];
 
 export type ProductWithVariantCount = ProductRow & {
-  product_variants: { id: string }[];
+  product_variants: { id: string; name: string; selling_price: number }[];
 };
 export type ProductWithVariants = ProductRow & {
   product_variants: VariantRow[];
@@ -18,7 +18,7 @@ export async function getProducts(
 ): Promise<ProductWithVariantCount[]> {
   const { data, error } = await supabase
     .from("products")
-    .select("*, product_variants(id)")
+    .select("*, product_variants(id, name, selling_price)")
     .order("name");
   if (error) throw error;
   return data as ProductWithVariantCount[];

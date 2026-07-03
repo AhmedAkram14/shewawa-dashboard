@@ -7,13 +7,17 @@ type FactoryRow = Database["public"]["Tables"]["factories"]["Row"];
 
 export type { FactoryRow };
 
-export async function getFactories(supabase: DB): Promise<FactoryRow[]> {
+export type FactoryWithStats = FactoryRow & {
+  factory_orders: { id: string; status: string }[];
+};
+
+export async function getFactories(supabase: DB): Promise<FactoryWithStats[]> {
   const { data, error } = await supabase
     .from("factories")
-    .select("*")
+    .select("*, factory_orders(id, status)")
     .order("name");
   if (error) throw error;
-  return data;
+  return data as FactoryWithStats[];
 }
 
 export async function getFactory(

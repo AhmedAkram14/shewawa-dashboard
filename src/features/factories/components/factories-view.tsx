@@ -8,11 +8,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 import { useFactories } from "../hooks/use-factories";
-import type { FactoryRow } from "../api/factories";
+import type { FactoryWithStats } from "../api/factories";
 import { FactorySheet } from "./factory-sheet";
 
 interface Props {
-  initialData: FactoryRow[];
+  initialData: FactoryWithStats[];
 }
 
 export function FactoriesView({ initialData }: Props) {
@@ -44,21 +44,33 @@ export function FactoriesView({ initialData }: Props) {
         </div>
       ) : (
         <ul className="divide-y">
-          {factories.map((f) => (
-            <li key={f.id}>
-              <Link
-                href={`/factories/${f.id}`}
-                className="flex items-center justify-between py-3 transition-colors hover:text-foreground"
-              >
-                <div>
-                  <p className="font-medium">{f.name}</p>
+          {factories.map((f) => {
+            const openOrders = f.factory_orders.filter(
+              (fo) => fo.status !== "closed",
+            ).length;
+            return (
+              <li key={f.id}>
+                <Link
+                  href={`/factories/${f.id}`}
+                  className="block py-3 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-semibold">{f.name}</span>
+                    {openOrders > 0 && (
+                      <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                        {openOrders} open
+                      </span>
+                    )}
+                  </div>
                   {f.contact && (
-                    <p className="text-xs text-muted-foreground">{f.contact}</p>
+                    <p className="mt-0.5 text-sm text-muted-foreground">
+                      {f.contact}
+                    </p>
                   )}
-                </div>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
 

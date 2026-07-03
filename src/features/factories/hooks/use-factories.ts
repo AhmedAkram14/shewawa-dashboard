@@ -5,14 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { createClient } from "@/lib/supabase/client";
 
 import { getFactory, getFactories } from "../api/factories";
-import type { FactoryRow } from "../api/factories";
+import type { FactoryRow, FactoryWithStats } from "../api/factories";
 
 export const factoryKeys = {
   all: ["factories"] as const,
   detail: (id: string) => ["factories", id] as const,
 };
 
-export function useFactories(initialData?: FactoryRow[]) {
+export function useFactories(initialData?: FactoryWithStats[]) {
   return useQuery({
     queryKey: factoryKeys.all,
     queryFn: () => getFactories(createClient()),

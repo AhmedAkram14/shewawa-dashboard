@@ -11,6 +11,7 @@ export type { OrderRow, OrderLineRow };
 
 export type OrderWithCustomer = OrderRow & {
   customers: { id: string; name: string };
+  order_lines: { quantity: number; unit_price: number }[];
 };
 
 export type OrderLineDetail = OrderLineRow & {
@@ -40,7 +41,7 @@ export type ProductForPicker = {
 export async function getOrders(supabase: DB): Promise<OrderWithCustomer[]> {
   const { data, error } = await supabase
     .from("orders")
-    .select("*, customers(id, name)")
+    .select("*, customers(id, name), order_lines(quantity, unit_price)")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data as OrderWithCustomer[];

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/format";
 
 import { useFactoryOrders } from "../hooks/use-factory-orders";
 import type { FactoryOrderWithFactory } from "../api/factory-orders";
@@ -51,24 +52,50 @@ export function FactoryOrdersView({ initialData }: Props) {
         </div>
       ) : (
         <ul className="divide-y">
-          {orders.map((fo) => (
-            <li key={fo.id}>
-              <Link
-                href={`/factory-orders/${fo.id}`}
-                className="flex items-center justify-between py-3 transition-colors hover:text-foreground"
-              >
-                <div>
-                  <p className="font-medium">
-                    #{fo.factory_order_number} — {fo.factories.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {new Date(fo.created_at).toLocaleDateString("en-EG")}
-                  </p>
-                </div>
-                <FactoryOrderStatusBadge status={fo.status} />
-              </Link>
-            </li>
-          ))}
+          {orders.map((fo) => {
+            const pcs = fo.factory_order_lines.reduce(
+              (sum, l) => sum + l.quantity,
+              0,
+            );
+            const allCostsKnown = fo.factory_order_lines.every(
+              (l) => l.unit_cost != null,
+            );
+            const totalCost = allCostsKnown
+              ? fo.factory_order_lines.reduce(
+                  (sum, l) => sum + l.quantity * (l.unit_cost ?? 0),
+                  0,
+                )
+              : null;
+            const date = new Date(fo.created_at).toLocaleDateString("en-EG", {
+              day: "numeric",
+              month: "short",
+            });
+            return (
+              <li key={fo.id}>
+                <Link
+                  href={`/factory-orders/${fo.id}`}
+                  className="block py-3 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-semibold">
+                      #{fo.factory_order_number} — {fo.factories.name}
+                    </span>
+                    <FactoryOrderStatusBadge status={fo.status} />
+                  </div>
+                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
+                    {pcs > 0 && <span>{pcs} pcs</span>}
+                    {totalCost != null && (
+                      <>
+                        {pcs > 0 && <span>·</span>}
+                        <span>EGP {formatPrice(totalCost)}</span>
+                      </>
+                    )}
+                    <span className="ml-auto text-xs">{date}</span>
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
