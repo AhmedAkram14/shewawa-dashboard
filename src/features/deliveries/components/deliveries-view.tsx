@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Plus, PackageCheck } from "lucide-react";
+import { ArrowLeft, Plus, PackageCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export function DeliveriesView({ initialData }: Props) {
+  const router = useRouter();
   const { data: deliveries = [] } = useDeliveries(initialData);
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -26,8 +28,13 @@ export function DeliveriesView({ initialData }: Props) {
 
   return (
     <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold leading-tight">Deliveries</h1>
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" onClick={() => router.back()}>
+          <ArrowLeft />
+        </Button>
+        <h1 className="flex-1 text-2xl font-semibold leading-tight">
+          Deliveries
+        </h1>
         <Button size="sm" onClick={() => setSheetOpen(true)}>
           <Plus className="mr-1.5 h-4 w-4" />
           New
