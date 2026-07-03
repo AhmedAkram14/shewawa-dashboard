@@ -21,6 +21,14 @@ export const metadata: Metadata = {
   title: "SHE WAWA",
   description: "Pre-order management dashboard",
   manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "SHE WAWA",
+  },
+  icons: {
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {

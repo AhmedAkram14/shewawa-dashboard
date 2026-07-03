@@ -66,8 +66,9 @@ export const config = {
      * - _next/static  (static files)
      * - _next/image   (image optimisation)
      * - favicon.ico
+     * - PWA files: sw.js, workbox chunks, manifest.json
      * - any file with a common static extension
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|sw\\.js|swe-worker-.*\\.js|workbox-.*\\.js|manifest\\.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2)$).*)",
   ],
 };
