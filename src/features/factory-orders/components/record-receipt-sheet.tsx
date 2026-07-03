@@ -314,7 +314,7 @@ function StageQuantities({
                   </p>
                 </div>
                 {isComplete && (
-                  <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                  <span className="shrink-0 rounded-full bg-success-bg px-2 py-0.5 text-xs font-medium text-success-tx">
                     Complete
                   </span>
                 )}
@@ -413,7 +413,7 @@ function StageAllocations({
 
       {/* Refinement 1: Manual override indicator */}
       {isManualOverride && (
-        <div className="flex items-center gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        <div className="flex items-center gap-2 rounded-md border border-warn-tx/30 bg-warn-bg px-3 py-2 text-sm text-warn-tx">
           <AlertTriangle className="h-4 w-4 shrink-0" />
           <span className="flex-1 font-medium">Manual Allocation Override</span>
           <button
@@ -438,7 +438,7 @@ function StageAllocations({
         <div className="flex justify-between p-3">
           <span className="text-sm text-muted-foreground">Surplus</span>
           <span
-            className={`text-sm font-medium ${summary.surplus > 0 ? "text-amber-600" : ""}`}
+            className={`text-sm font-medium ${summary.surplus > 0 ? "text-warn-tx" : ""}`}
           >
             {summary.surplus} pcs
           </span>

@@ -42,7 +42,7 @@ function getFactoryOrderRecommendations(
       id: "create-delivery",
       priority: 1,
       icon: Truck,
-      iconClass: "text-blue-500",
+      iconClass: "text-primary",
       message: `${n} order${n !== 1 ? "s" : ""} from this batch ${n !== 1 ? "are" : "is"} ready for delivery`,
       actionLabel: "Create Delivery",
       href: "/deliveries",
@@ -140,7 +140,7 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
                     </p>
                   </div>
                   {isComplete ? (
-                    <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+                    <span className="shrink-0 rounded-full bg-success-bg px-2 py-0.5 text-xs font-medium text-success-tx">
                       Complete
                     </span>
                   ) : (
@@ -206,14 +206,14 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         </div>
         <div className="flex items-center justify-between px-4 py-3">
           <span className="text-sm text-muted-foreground">Paid</span>
-          <span className="text-sm font-semibold text-green-700">
+          <span className="text-sm font-semibold text-success-tx">
             {totalPaid > 0 ? `EGP ${formatPrice(totalPaid)}` : "—"}
           </span>
         </div>
         <div className="flex items-center justify-between px-4 py-3">
           <span className="text-sm font-medium">Still owed</span>
           <span
-            className={`text-sm font-bold ${totalOwed > 0 ? "text-coral" : "text-green-700"}`}
+            className={`text-sm font-bold ${totalOwed > 0 ? "text-coral" : "text-success-tx"}`}
           >
             {agreedCost === 0
               ? "—"

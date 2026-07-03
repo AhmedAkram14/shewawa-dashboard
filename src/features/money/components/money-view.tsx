@@ -22,16 +22,16 @@ const STATUS_META: Record<
   OrderStatus,
   { label: string; icon: React.ElementType; accent: string }
 > = {
-  pending: { label: "Pending", icon: CircleDot, accent: "text-yellow-500" },
+  pending: { label: "Pending", icon: CircleDot, accent: "text-warn-tx" },
   ready: {
     label: "Ready for delivery",
     icon: CheckCircle2,
-    accent: "text-blue-500",
+    accent: "text-primary",
   },
   out_for_delivery: {
     label: "Out for delivery",
     icon: Truck,
-    accent: "text-orange-500",
+    accent: "text-coral",
   },
 };
 
@@ -156,7 +156,7 @@ export function MoneyView({ report }: { report: MoneyReport }) {
           {
             label: "Collected (deposits)",
             value: report.customer_collected,
-            accent: "text-green-700",
+            accent: "text-success-tx",
           },
           {
             label: "Expected (balance due)",
@@ -166,7 +166,7 @@ export function MoneyView({ report }: { report: MoneyReport }) {
         ]}
         total={report.customer_revenue}
         totalLabel="Total revenue"
-        totalAccent="bg-green-50 text-green-900"
+        totalAccent="bg-success-bg text-success-tx"
       />
 
       {/* ── Factory side ───────────────────────────────────────────────── */}
@@ -176,7 +176,7 @@ export function MoneyView({ report }: { report: MoneyReport }) {
           {
             label: "Paid to factories",
             value: report.factory_paid,
-            accent: "text-green-700",
+            accent: "text-success-tx",
           },
           {
             label: "Still owed to factories",
@@ -199,7 +199,7 @@ export function MoneyView({ report }: { report: MoneyReport }) {
             : report.factory_paid + report.factory_outstanding
         }
         totalLabel="Total factory cost"
-        totalAccent="bg-red-50 text-red-900"
+        totalAccent="bg-danger-bg text-danger-tx"
       />
 
       {report.factory_cost_lines_unknown > 0 && (
@@ -218,13 +218,13 @@ export function MoneyView({ report }: { report: MoneyReport }) {
       <div
         className={`rounded-xl border p-4 shadow-sm ${
           profitPositive
-            ? "border-green-200 bg-green-50"
-            : "border-red-200 bg-red-50"
+            ? "border-success-tx/20 bg-success-bg"
+            : "border-danger-tx/20 bg-danger-bg"
         }`}
       >
         <div className="flex items-center gap-2">
           <TrendingUp
-            className={`h-4 w-4 ${profitPositive ? "text-green-600" : "text-red-500"}`}
+            className={`h-4 w-4 ${profitPositive ? "text-success-tx" : "text-danger-tx"}`}
           />
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Expected Gross Profit
@@ -238,19 +238,19 @@ export function MoneyView({ report }: { report: MoneyReport }) {
           ) : (
             <p
               className={`text-3xl font-bold leading-none ${
-                profitPositive ? "text-green-800" : "text-red-700"
+                profitPositive ? "text-success-tx" : "text-danger-tx"
               }`}
             >
               EGP {formatPrice(Math.abs(displayProfit))}
             </p>
           )}
           {displayProfit != null && !profitPositive && (
-            <span className="text-sm font-medium text-red-600">loss</span>
+            <span className="text-sm font-medium text-danger-tx">loss</span>
           )}
           {displayProfit != null && report.gross_margin_pct != null && (
             <span
               className={`text-sm font-semibold ${
-                profitPositive ? "text-green-700" : "text-red-600"
+                profitPositive ? "text-success-tx" : "text-danger-tx"
               }`}
             >
               {report.gross_margin_pct}%

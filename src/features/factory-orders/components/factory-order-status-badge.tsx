@@ -7,11 +7,11 @@ type FOStatus = FactoryOrderRow["status"];
 const STATUS_CONFIG: Record<FOStatus, { label: string; className: string }> = {
   open: {
     label: "Open",
-    className: "bg-blue-50 text-blue-700 border-blue-200",
+    className: "bg-c50 text-coral-dk border-c100",
   },
   closed: {
     label: "Closed",
-    className: "bg-green-50 text-green-700 border-green-200",
+    className: "bg-success-bg text-success-tx border-success-tx/20",
   },
 };
 

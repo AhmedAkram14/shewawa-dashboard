@@ -112,7 +112,7 @@ export function DeliveryDetailView({ id, initialData }: Props) {
                       EGP {formatPrice(value)}
                     </p>
                     {order.delivered_at && (
-                      <p className="text-xs text-green-700">Delivered</p>
+                      <p className="text-xs text-success-tx">Delivered</p>
                     )}
                   </div>
                 </Link>

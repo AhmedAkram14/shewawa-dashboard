@@ -124,7 +124,7 @@ export function CompleteDeliverySheet({
               return (
                 <li
                   key={order.id}
-                  className={isFailed ? "bg-destructive/5" : "bg-green-50/50"}
+                  className={isFailed ? "bg-destructive/5" : "bg-success-bg/50"}
                 >
                   {/* Order row — tap to toggle */}
                   <div
@@ -141,7 +141,7 @@ export function CompleteDeliverySheet({
                       className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${
                         isFailed
                           ? "bg-destructive/10 text-destructive"
-                          : "bg-green-100 text-green-700"
+                          : "bg-success-bg text-success-tx"
                       }`}
                     >
                       {isFailed ? (
@@ -193,7 +193,7 @@ export function CompleteDeliverySheet({
 
           {/* Live summary */}
           <div className="flex gap-4 text-sm">
-            <span className="font-medium text-green-700">
+            <span className="font-medium text-success-tx">
               {deliveredCount} delivered
             </span>
             {failedCount > 0 && (

@@ -8,15 +8,15 @@ const STATUS_CONFIG: Record<
 > = {
   pending: {
     label: "Pending",
-    className: "bg-amber-50 text-amber-700 border-amber-200",
+    className: "bg-warn-bg text-warn-tx border-warn-tx/30",
   },
   dispatched: {
     label: "Dispatched",
-    className: "bg-purple-50 text-purple-700 border-purple-200",
+    className: "bg-c100 text-coral-dk border-c200",
   },
   completed: {
     label: "Completed",
-    className: "bg-green-50 text-green-700 border-green-200",
+    className: "bg-success-bg text-success-tx border-success-tx/20",
   },
 };
 

@@ -57,7 +57,7 @@ export function FactoriesView({ initialData }: Props) {
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold">{f.name}</span>
                     {openOrders > 0 && (
-                      <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
+                      <span className="shrink-0 rounded-full bg-warn-bg px-2.5 py-0.5 text-xs font-semibold text-warn-tx">
                         {openOrders} open
                       </span>
                     )}

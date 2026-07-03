@@ -47,15 +47,15 @@ function groupByVariant(entries: StockEntry[]): VariantGroup[] {
 const SOURCE_CONFIG = {
   factory_surplus: {
     label: "Surplus",
-    className: "bg-green-100 text-green-800 border-green-200",
+    className: "bg-success-bg text-success-tx border-success-tx/20",
   },
   cancellation: {
     label: "Cancellation",
-    className: "bg-amber-100 text-amber-800 border-amber-200",
+    className: "bg-warn-bg text-warn-tx border-warn-tx/30",
   },
   manual: {
     label: "Manual",
-    className: "bg-blue-100 text-blue-800 border-blue-200",
+    className: "bg-c50 text-coral-dk border-c100",
   },
 };
 
@@ -84,8 +84,8 @@ export function AvailableStockView({ initialData }: Props) {
 
       {groups.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <PackageCheck className="h-12 w-12 text-green-500/60" />
-          <p className="font-medium text-green-700">All delivered!</p>
+          <PackageCheck className="h-12 w-12 text-success-tx/60" />
+          <p className="font-medium text-success-tx">All delivered!</p>
           <p className="text-sm text-muted-foreground">
             No surplus stock. Every piece has been allocated or delivered.
           </p>

@@ -9,30 +9,30 @@ const ORDER_CONFIG: Record<OrderStatus, { label: string; className: string }> =
   {
     pending: {
       label: "Pending",
-      className: "bg-amber-50 text-amber-700 border-amber-200",
+      className: "bg-warn-bg text-warn-tx border-warn-tx/30",
     },
     ready: {
       label: "Ready",
-      className: "bg-blue-50 text-blue-700 border-blue-200",
+      className: "bg-c50 text-coral-dk border-c100",
     },
     out_for_delivery: {
       label: "Out for Delivery",
-      className: "bg-purple-50 text-purple-700 border-purple-200",
+      className: "bg-c100 text-coral-dk border-c200",
     },
     delivered: {
       label: "Delivered",
-      className: "bg-green-50 text-green-700 border-green-200",
+      className: "bg-success-bg text-success-tx border-success-tx/20",
     },
     cancelled: {
       label: "Cancelled",
-      className: "bg-gray-100 text-gray-500 border-gray-200",
+      className: "bg-muted text-muted-foreground border-border",
     },
   };
 
 const LINE_CONFIG: Record<LineStatus, { label: string; className: string }> = {
   pending: {
     label: "Pending",
-    className: "bg-amber-50 text-amber-700 border-amber-200",
+    className: "bg-warn-bg text-warn-tx border-warn-tx/30",
   },
   at_factory: {
     label: "At Factory",
@@ -40,11 +40,11 @@ const LINE_CONFIG: Record<LineStatus, { label: string; className: string }> = {
   },
   allocated: {
     label: "Allocated",
-    className: "bg-green-50 text-green-700 border-green-200",
+    className: "bg-success-bg text-success-tx border-success-tx/20",
   },
   cancelled: {
     label: "Cancelled",
-    className: "bg-gray-100 text-gray-500 border-gray-200",
+    className: "bg-muted text-muted-foreground border-border",
   },
 };
 

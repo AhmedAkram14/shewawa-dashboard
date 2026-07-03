@@ -104,28 +104,28 @@ export default async function TodayPage() {
                 value={summary.pending_count}
                 icon={Package}
                 href="/orders"
-                accent="text-yellow-500"
+                accent="text-warn-tx"
               />
               <KpiCard
                 label="Ready for Delivery"
                 value={summary.ready_count}
                 icon={CheckCircle2}
                 href="/orders"
-                accent="text-blue-500"
+                accent="text-primary"
               />
               <KpiCard
                 label="Out for Delivery"
                 value={summary.out_for_delivery_count}
                 icon={Truck}
                 href="/deliveries"
-                accent="text-orange-500"
+                accent="text-coral"
               />
               <KpiCard
                 label="Delivered Today"
                 value={summary.delivered_today_count}
                 icon={PackageCheck}
                 href="/orders"
-                accent="text-green-500"
+                accent="text-success-tx"
               />
             </div>
           </section>
@@ -141,7 +141,7 @@ export default async function TodayPage() {
               sub="units currently in production"
               icon={Factory}
               href="/factory-orders"
-              accent="text-purple-500"
+              accent="text-coral-dk"
             />
           </section>
 
@@ -163,7 +163,7 @@ export default async function TodayPage() {
                 value={`EGP ${formatPrice(summary.deposits_on_active)}`}
                 sub="paid so far"
                 icon={Banknote}
-                accent="text-green-500"
+                accent="text-success-tx"
               />
             </div>
             <div className="mt-3">
@@ -172,7 +172,7 @@ export default async function TodayPage() {
                 value={`EGP ${formatPrice(summary.outstanding_balance)}`}
                 sub="balance still owed by customers"
                 icon={Banknote}
-                accent="text-red-500"
+                accent="text-danger-tx"
               />
             </div>
           </section>

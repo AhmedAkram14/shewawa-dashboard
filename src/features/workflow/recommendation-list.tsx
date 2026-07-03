@@ -24,9 +24,9 @@ export function RecommendationList({
 
       {recommendations.length === 0 ? (
         emptyMessage ? (
-          <div className="flex items-center gap-3 rounded-xl border bg-green-50 p-4 dark:bg-green-950/30">
-            <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" />
-            <p className="text-sm font-medium text-green-800 dark:text-green-300">
+          <div className="flex items-center gap-3 rounded-xl border bg-success-bg p-4">
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-success-tx" />
+            <p className="text-sm font-medium text-success-tx">
               {emptyMessage}
             </p>
           </div>

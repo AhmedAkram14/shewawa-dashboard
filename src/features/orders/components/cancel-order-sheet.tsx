@@ -87,7 +87,7 @@ export function CancelOrderSheet({ open, onOpenChange, order }: Props) {
                 Pieces Returning to Stock
               </span>
               <span
-                className={`text-sm font-medium ${returningPcs > 0 ? "text-amber-600" : ""}`}
+                className={`text-sm font-medium ${returningPcs > 0 ? "text-warn-tx" : ""}`}
               >
                 {returningPcs} pcs
               </span>

@@ -72,7 +72,7 @@ export function OrdersView({ initialData }: Props) {
                           EGP {formatPrice(balanceDue)} due
                         </span>
                       ) : (
-                        <span className="ml-auto text-xs text-green-600">
+                        <span className="ml-auto text-xs text-success-tx">
                           Paid in full
                         </span>
                       )}
