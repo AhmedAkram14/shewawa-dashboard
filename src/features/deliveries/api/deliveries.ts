@@ -95,14 +95,21 @@ export async function callDispatchDelivery(
   if (error) throw error;
 }
 
+export type FailedOrderOutcome = {
+  order_id: string;
+  failure_reason?: string | null;
+  courier_notes?: string | null;
+};
+
 export async function callCompleteDelivery(
   supabase: DB,
   deliveryId: string,
-  failedOrderIds: string[] = [],
+  failedOrders: FailedOrderOutcome[] = [],
 ): Promise<void> {
   const { error } = await supabase.rpc("complete_delivery", {
     p_delivery_id: deliveryId,
-    p_failed_order_ids: failedOrderIds,
+    p_failed_orders:
+      failedOrders as unknown as import("@/lib/supabase/database.types").Json,
   });
   if (error) throw error;
 }

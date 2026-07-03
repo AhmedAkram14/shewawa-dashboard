@@ -617,19 +617,43 @@ export type Database = {
           delivery_id: string;
           order_id: string;
           outcome: "delivered" | "failed";
-          notes: string | null;
+          failure_reason:
+            | "customer_not_home"
+            | "no_answer"
+            | "rescheduled"
+            | "refused"
+            | "other"
+            | null;
+          courier_notes: string | null;
+          completed_at: string;
           created_at: string;
         };
         Insert: {
           delivery_id: string;
           order_id: string;
           outcome: "delivered" | "failed";
-          notes?: string | null;
+          failure_reason?:
+            | "customer_not_home"
+            | "no_answer"
+            | "rescheduled"
+            | "refused"
+            | "other"
+            | null;
+          courier_notes?: string | null;
+          completed_at?: string;
           created_at?: string;
         };
         Update: {
           outcome?: "delivered" | "failed";
-          notes?: string | null;
+          failure_reason?:
+            | "customer_not_home"
+            | "no_answer"
+            | "rescheduled"
+            | "refused"
+            | "other"
+            | null;
+          courier_notes?: string | null;
+          completed_at?: string;
         };
         Relationships: [
           {
@@ -760,7 +784,7 @@ export type Database = {
       complete_delivery: {
         Args: {
           p_delivery_id: string;
-          p_failed_order_ids?: string[];
+          p_failed_orders?: Json;
         };
         Returns: undefined;
       };
