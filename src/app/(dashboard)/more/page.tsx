@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {
+  Banknote,
   Building2,
   Package,
   PackageCheck,
@@ -13,6 +14,7 @@ import { SignOutButton } from "@/components/sign-out-button";
 export const metadata: Metadata = { title: "More — SHE WAWA" };
 
 const LINKS = [
+  { href: "/money", label: "Money", icon: Banknote },
   { href: "/products", label: "Products", icon: PackageCheck },
   { href: "/factories", label: "Factories", icon: Building2 },
   { href: "/factory-orders", label: "Factory Orders", icon: ShoppingCart },
