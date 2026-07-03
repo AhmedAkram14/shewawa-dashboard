@@ -3,6 +3,7 @@ import { DM_Sans, Playfair_Display } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { PwaProvider } from "@/components/pwa/pwa-provider";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -48,7 +49,10 @@ export default function RootLayout({
         className={`${dmSans.variable} ${playfair.variable} antialiased`}
         suppressHydrationWarning
       >
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          {children}
+          <PwaProvider />
+        </QueryProvider>
         <Toaster richColors position="top-center" />
       </body>
     </html>
