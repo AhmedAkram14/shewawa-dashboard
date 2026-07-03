@@ -25,7 +25,12 @@ export function FactoryDetailView({ id, initialData }: Props) {
   return (
     <div className="mx-auto max-w-lg space-y-5 p-4">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" render={<Link href="/factories" />}>
+        <Button
+          variant="ghost"
+          size="icon"
+          nativeButton={false}
+          render={<Link href="/factories" />}
+        >
           <ArrowLeft />
         </Button>
         <div className="flex flex-1 items-center justify-between">

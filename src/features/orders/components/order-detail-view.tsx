@@ -32,14 +32,30 @@ export function OrderDetailView({ id, initialData }: Props) {
   );
   const balance = Math.max(0, subtotal - order.deposit_amount);
 
-  const canEdit = order.status === "pending";
+  const LOCKED_STATUSES = [
+    "ready",
+    "out_for_delivery",
+    "delivered",
+    "cancelled",
+  ] as const;
+  const canEdit = !LOCKED_STATUSES.includes(
+    order.status as (typeof LOCKED_STATUSES)[number],
+  );
+  const canEditLines = order.order_lines.every(
+    (l) => l.status === "pending" && l.factory_order_line_id === null,
+  );
   const canCancel = order.status === "pending" || order.status === "ready";
 
   return (
     <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" render={<Link href="/orders" />}>
+        <Button
+          variant="ghost"
+          size="icon"
+          nativeButton={false}
+          render={<Link href="/orders" />}
+        >
           <ArrowLeft />
         </Button>
         <div className="flex flex-1 items-center justify-between">
@@ -172,6 +188,7 @@ export function OrderDetailView({ id, initialData }: Props) {
         open={editOpen}
         onOpenChange={setEditOpen}
         order={order}
+        canEditLines={canEditLines}
       />
       <CancelOrderSheet
         open={cancelOpen}

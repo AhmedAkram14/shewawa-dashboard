@@ -705,6 +705,25 @@ export type Database = {
         };
         Returns: undefined;
       };
+      create_delivery: {
+        Args: {
+          p_order_ids: string[];
+          p_notes: string | null;
+        };
+        Returns: string;
+      };
+      dispatch_delivery: {
+        Args: {
+          p_delivery_id: string;
+        };
+        Returns: undefined;
+      };
+      complete_delivery: {
+        Args: {
+          p_delivery_id: string;
+        };
+        Returns: undefined;
+      };
     };
 
     Enums: Record<string, never>;

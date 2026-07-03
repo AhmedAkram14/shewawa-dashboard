@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -20,6 +22,13 @@ interface Props {
 
 export function CancelOrderSheet({ open, onOpenChange, order }: Props) {
   const mutation = useCancelOrder(order.id);
+  const error = mutation.error?.message ?? null;
+
+  // Clear stale error state whenever the sheet opens
+  useEffect(() => {
+    if (open) mutation.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
 
   const nonCancelled = order.order_lines.filter(
     (l) => l.status !== "cancelled",
@@ -33,9 +42,7 @@ export function CancelOrderSheet({ open, onOpenChange, order }: Props) {
   );
 
   function handleCancel() {
-    mutation.mutate(undefined, {
-      onError: () => onOpenChange(false),
-    });
+    mutation.mutate(undefined);
   }
 
   return (
@@ -96,6 +103,12 @@ export function CancelOrderSheet({ open, onOpenChange, order }: Props) {
           )}
 
           <Separator />
+
+          {error && (
+            <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              {error}
+            </p>
+          )}
 
           <div className="flex gap-2">
             <Button

@@ -20,9 +20,15 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   order: OrderDetail;
+  canEditLines: boolean;
 }
 
-export function EditOrderSheet({ open, onOpenChange, order }: Props) {
+export function EditOrderSheet({
+  open,
+  onOpenChange,
+  order,
+  canEditLines: _canEditLines,
+}: Props) {
   const subtotal = order.order_lines.reduce(
     (s, l) => s + l.quantity * l.unit_price,
     0,

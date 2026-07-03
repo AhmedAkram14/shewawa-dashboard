@@ -20,7 +20,11 @@ export function FactoryOrdersView({ initialData }: Props) {
     <div className="mx-auto max-w-lg p-4">
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-2xl font-semibold leading-tight">Factory Orders</h1>
-        <Button size="sm" render={<Link href="/factory-orders/new" />}>
+        <Button
+          size="sm"
+          nativeButton={false}
+          render={<Link href="/factory-orders/new" />}
+        >
           <Plus />
           New
         </Button>
@@ -31,7 +35,10 @@ export function FactoryOrdersView({ initialData }: Props) {
           <p className="mb-4 text-sm text-muted-foreground">
             No factory orders yet
           </p>
-          <Button render={<Link href="/factory-orders/new" />}>
+          <Button
+            nativeButton={false}
+            render={<Link href="/factory-orders/new" />}
+          >
             Send to factory
           </Button>
         </div>

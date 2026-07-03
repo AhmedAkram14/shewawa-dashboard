@@ -115,7 +115,12 @@ export function NewOrderView() {
     <div className="mx-auto max-w-lg space-y-6 p-4 pb-32">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" render={<Link href="/orders" />}>
+        <Button
+          variant="ghost"
+          size="icon"
+          nativeButton={false}
+          render={<Link href="/orders" />}
+        >
           <ArrowLeft />
         </Button>
         <h1 className="text-2xl font-semibold leading-tight">New Order</h1>

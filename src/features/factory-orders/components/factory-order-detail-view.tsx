@@ -44,6 +44,7 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         <Button
           variant="ghost"
           size="icon"
+          nativeButton={false}
           render={<Link href="/factory-orders" />}
         >
           <ArrowLeft />

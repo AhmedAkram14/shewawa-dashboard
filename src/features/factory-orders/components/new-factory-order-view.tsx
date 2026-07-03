@@ -147,6 +147,7 @@ export function NewFactoryOrderView() {
         <Button
           variant="ghost"
           size="icon"
+          nativeButton={false}
           render={<Link href="/factory-orders" />}
         >
           <ArrowLeft />
@@ -358,6 +359,7 @@ export function NewFactoryOrderView() {
           <div className="flex flex-col gap-3 px-4">
             <Button
               variant="outline"
+              nativeButton={false}
               render={<Link href="/factories" />}
               onClick={() => setFactoryPickerOpen(false)}
             >

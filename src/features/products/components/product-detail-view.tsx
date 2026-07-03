@@ -40,6 +40,7 @@ export function ProductDetailView({ id, initialData }: Props) {
         <Button
           variant="ghost"
           size="icon-sm"
+          nativeButton={false}
           render={<Link href="/products" />}
         >
           <ChevronLeft />

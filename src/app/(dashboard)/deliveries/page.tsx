@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
+import { createClient } from "@/lib/supabase/server";
+import { getDeliveries } from "@/features/deliveries/api/deliveries";
+import { DeliveriesView } from "@/features/deliveries/components/deliveries-view";
+
 export const metadata: Metadata = { title: "Deliveries — SHE WAWA" };
 
-export default function DeliveriesPage() {
-  return (
-    <div className="mx-auto max-w-lg p-4">
-      <h1 className="text-2xl font-semibold leading-tight">Deliveries</h1>
-    </div>
-  );
+export default async function DeliveriesPage() {
+  const supabase = await createClient();
+  const deliveries = await getDeliveries(supabase);
+
+  return <DeliveriesView initialData={deliveries} />;
 }
