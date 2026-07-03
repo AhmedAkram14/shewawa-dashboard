@@ -23,6 +23,15 @@ export type ReceiptRecord = {
   notes: string | null;
 };
 
+export type FactoryPaymentRecord = {
+  id: string;
+  amount: number;
+  paid_at: string;
+  reference: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
 export type AllocationOrderLine = {
   id: string;
   order_id: string;
@@ -51,6 +60,7 @@ export type FactoryOrderLineDetail = FactoryOrderLineRow & {
 export type FactoryOrderDetail = FactoryOrderRow & {
   factories: { id: string; name: string };
   factory_order_lines: FactoryOrderLineDetail[];
+  factory_payments: FactoryPaymentRecord[];
 };
 
 export type PendingOrderLine = OrderLineRow & {
@@ -77,6 +87,7 @@ export async function getFactoryOrder(
     .from("factory_orders")
     .select(
       `*, factories(id, name),
+      factory_payments(id, amount, paid_at, reference, notes, created_at),
       factory_order_lines(
         *,
         product_variants(id, name, products(id, name)),
@@ -133,6 +144,37 @@ export async function callAppendFactoryOrder(
   const { error } = await supabase.rpc("append_factory_order", {
     p_factory_order_id: args.factory_order_id,
     p_order_line_ids: args.order_line_ids,
+  });
+  if (error) throw error;
+}
+
+export async function callSetFactoryLineCost(
+  supabase: DB,
+  args: { line_id: string; unit_cost: number | null },
+): Promise<void> {
+  const { error } = await supabase.rpc("set_factory_line_cost", {
+    p_line_id: args.line_id,
+    p_unit_cost: args.unit_cost,
+  });
+  if (error) throw error;
+}
+
+export async function callRecordFactoryPayment(
+  supabase: DB,
+  args: {
+    factory_order_id: string;
+    amount: number;
+    paid_at: string;
+    reference: string | null;
+    notes: string | null;
+  },
+): Promise<void> {
+  const { error } = await supabase.from("factory_payments").insert({
+    factory_order_id: args.factory_order_id,
+    amount: args.amount,
+    paid_at: args.paid_at,
+    reference: args.reference,
+    notes: args.notes,
   });
   if (error) throw error;
 }

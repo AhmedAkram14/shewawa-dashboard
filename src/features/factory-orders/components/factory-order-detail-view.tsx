@@ -1,16 +1,19 @@
 "use client";
 
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Banknote, Pencil } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import { Truck } from "lucide-react";
 import { RecommendationList } from "@/features/workflow/recommendation-list";
 import type { Recommendation } from "@/features/workflow/derive-recommendations";
+import { formatPrice } from "@/lib/format";
 import { useFactoryOrder } from "../hooks/use-factory-orders";
+import { useSetFactoryLineCost } from "../hooks/use-set-factory-line-cost";
 import type {
   FactoryOrderDetail,
   FactoryOrderLineDetail,
@@ -18,6 +21,7 @@ import type {
 import { FactoryOrderStatusBadge } from "./factory-order-status-badge";
 import { RecordReceiptSheet } from "./record-receipt-sheet";
 import { AppendFactoryOrderSheet } from "./append-factory-order-sheet";
+import { RecordPaymentSheet } from "./record-payment-sheet";
 
 function getFactoryOrderRecommendations(
   fo: FactoryOrderDetail,
@@ -47,21 +51,100 @@ function getFactoryOrderRecommendations(
   ];
 }
 
-interface Props {
-  id: string;
-  initialData: FactoryOrderDetail;
-}
-
 function totalReceivedForLine(fol: FactoryOrderLineDetail): number {
   return fol.factory_receipts
     .filter((r) => r.reversal_of === null)
     .reduce((s, r) => s + r.quantity, 0);
 }
 
+function LineCostEditor({
+  lineId,
+  unitCost,
+  factoryOrderId,
+}: {
+  lineId: string;
+  unitCost: number | null;
+  factoryOrderId: string;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(
+    unitCost != null ? (unitCost / 100).toFixed(2) : "",
+  );
+  const mutation = useSetFactoryLineCost(factoryOrderId);
+
+  function save() {
+    const parsed = parseFloat(value);
+    const piastres =
+      value.trim() === ""
+        ? null
+        : isNaN(parsed)
+          ? null
+          : Math.round(parsed * 100);
+    mutation.mutate(
+      { line_id: lineId, unit_cost: piastres },
+      { onSuccess: () => setEditing(false) },
+    );
+  }
+
+  if (!editing) {
+    return (
+      <button
+        onClick={() => {
+          setValue(unitCost != null ? (unitCost / 100).toFixed(2) : "");
+          setEditing(true);
+        }}
+        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+      >
+        <span>
+          {unitCost != null ? `EGP ${formatPrice(unitCost)}/pc` : "Set cost"}
+        </span>
+        <Pencil className="h-3 w-3" />
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-xs text-muted-foreground">EGP</span>
+      <Input
+        className="h-7 w-24 text-xs"
+        inputMode="decimal"
+        placeholder="0.00"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") save();
+          if (e.key === "Escape") setEditing(false);
+        }}
+        autoFocus
+      />
+      <button
+        onClick={save}
+        disabled={mutation.isPending}
+        className="text-xs font-medium text-primary hover:underline disabled:opacity-50"
+      >
+        Save
+      </button>
+      <button
+        onClick={() => setEditing(false)}
+        className="text-xs text-muted-foreground hover:text-foreground"
+      >
+        Cancel
+      </button>
+    </div>
+  );
+}
+
+interface Props {
+  id: string;
+  initialData: FactoryOrderDetail;
+}
+
 export function FactoryOrderDetailView({ id, initialData }: Props) {
   const { data: fo } = useFactoryOrder(id, initialData);
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [appendOpen, setAppendOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
 
   if (!fo) return null;
 
@@ -69,6 +152,16 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
     (s, l) => s + l.quantity,
     0,
   );
+
+  const agreedCost = fo.factory_order_lines.reduce(
+    (s, l) => (l.unit_cost != null ? s + l.quantity * l.unit_cost : s),
+    0,
+  );
+  const costLinesUnknown = fo.factory_order_lines.filter(
+    (l) => l.unit_cost == null,
+  ).length;
+  const totalPaid = fo.factory_payments.reduce((s, p) => s + p.amount, 0);
+  const totalOwed = Math.max(agreedCost - totalPaid, 0);
 
   return (
     <div className="mx-auto max-w-lg space-y-5 p-4 pb-24">
@@ -103,7 +196,7 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         </Link>
       </section>
 
-      {/* Lines with per-line progress (Refinement 2) */}
+      {/* Lines */}
       <section>
         <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Items · {fo.factory_order_lines.length} variant
@@ -140,10 +233,19 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
                   )}
                 </div>
 
-                <div className="mt-1.5 flex gap-4 text-xs text-muted-foreground">
+                <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                   <span>Ordered: {line.quantity}</span>
                   <span>Received: {received}</span>
                   {!isComplete && <span>Remaining: {remaining}</span>}
+                </div>
+
+                {/* Per-line cost editor */}
+                <div className="mt-2">
+                  <LineCostEditor
+                    lineId={line.id}
+                    unitCost={line.unit_cost}
+                    factoryOrderId={id}
+                  />
                 </div>
 
                 {activeReceipts.length > 0 && (
@@ -171,6 +273,79 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         </ul>
       </section>
 
+      {/* Financial summary for this order */}
+      <section className="rounded-lg border bg-card divide-y">
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="text-sm text-muted-foreground">Agreed cost</span>
+          <div className="text-right">
+            <span className="text-sm font-semibold">
+              {agreedCost > 0 ? `EGP ${formatPrice(agreedCost)}` : "—"}
+            </span>
+            {costLinesUnknown > 0 && (
+              <p className="text-xs text-muted-foreground">
+                {costLinesUnknown} line
+                {costLinesUnknown !== 1 ? "s" : ""} missing cost
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="text-sm text-muted-foreground">Paid</span>
+          <span className="text-sm font-semibold text-green-700">
+            {totalPaid > 0 ? `EGP ${formatPrice(totalPaid)}` : "—"}
+          </span>
+        </div>
+        <div className="flex items-center justify-between px-4 py-3">
+          <span className="text-sm font-medium">Still owed</span>
+          <span
+            className={`text-sm font-bold ${totalOwed > 0 ? "text-coral" : "text-green-700"}`}
+          >
+            {agreedCost === 0
+              ? "—"
+              : totalOwed > 0
+                ? `EGP ${formatPrice(totalOwed)}`
+                : "Fully paid"}
+          </span>
+        </div>
+      </section>
+
+      {/* Payment history */}
+      {fo.factory_payments.length > 0 && (
+        <section>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Payments
+          </p>
+          <ul className="divide-y rounded-lg border">
+            {fo.factory_payments
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.paid_at).getTime() - new Date(a.paid_at).getTime(),
+              )
+              .map((p) => (
+                <li
+                  key={p.id}
+                  className="flex items-center justify-between px-4 py-3"
+                >
+                  <div>
+                    <p className="text-sm font-medium">
+                      EGP {formatPrice(p.amount)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(p.paid_at).toLocaleDateString("en-EG")}
+                      {p.reference && ` · ${p.reference}`}
+                    </p>
+                    {p.notes && (
+                      <p className="text-xs text-muted-foreground">{p.notes}</p>
+                    )}
+                  </div>
+                  <Banknote className="h-4 w-4 shrink-0 text-muted-foreground/40" />
+                </li>
+              ))}
+          </ul>
+        </section>
+      )}
+
       {fo.notes && (
         <section>
           <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -186,20 +361,30 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         Created {new Date(fo.created_at).toLocaleString("en-EG")}
       </p>
 
-      {fo.status === "open" && (
-        <div className="flex flex-col gap-2">
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => setAppendOpen(true)}
-          >
-            Add Orders
-          </Button>
-          <Button className="w-full" onClick={() => setReceiptOpen(true)}>
-            Record Factory Receipt
-          </Button>
-        </div>
-      )}
+      <div className="flex flex-col gap-2">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => setPaymentOpen(true)}
+        >
+          <Banknote className="mr-1 h-4 w-4" />
+          Record Payment
+        </Button>
+        {fo.status === "open" && (
+          <>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => setAppendOpen(true)}
+            >
+              Add Orders
+            </Button>
+            <Button className="w-full" onClick={() => setReceiptOpen(true)}>
+              Record Factory Receipt
+            </Button>
+          </>
+        )}
+      </div>
 
       {(() => {
         const recs = getFactoryOrderRecommendations(fo);
@@ -219,6 +404,13 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
         onOpenChange={setAppendOpen}
         factoryOrderId={fo.id}
         factoryOrderNumber={fo.factory_order_number}
+      />
+
+      <RecordPaymentSheet
+        open={paymentOpen}
+        onOpenChange={setPaymentOpen}
+        factoryOrderId={fo.id}
+        factoryName={fo.factories.name}
       />
     </div>
   );

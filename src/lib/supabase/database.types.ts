@@ -331,6 +331,55 @@ export type Database = {
 
       // ── Factory orders ──────────────────────────────────────────────────────
 
+      factory_payments: {
+        Row: {
+          id: string;
+          business_id: string;
+          factory_order_id: string;
+          amount: number;
+          paid_at: string;
+          reference: string | null;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          business_id?: string;
+          factory_order_id: string;
+          amount: number;
+          paid_at: string;
+          reference?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          business_id?: string;
+          factory_order_id?: string;
+          amount?: number;
+          paid_at?: string;
+          reference?: string | null;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "factory_payments_business_id_fkey";
+            columns: ["business_id"];
+            isOneToOne: false;
+            referencedRelation: "businesses";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "factory_payments_factory_order_id_fkey";
+            columns: ["factory_order_id"];
+            isOneToOne: false;
+            referencedRelation: "factory_orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+
       factory_orders: {
         Row: {
           id: string;
@@ -385,6 +434,7 @@ export type Database = {
           factory_order_id: string;
           product_variant_id: string;
           quantity: number;
+          unit_cost: number | null;
           created_at: string;
         };
         Insert: {
@@ -392,6 +442,7 @@ export type Database = {
           factory_order_id: string;
           product_variant_id: string;
           quantity: number;
+          unit_cost?: number | null;
           created_at?: string;
         };
         Update: {
@@ -399,6 +450,7 @@ export type Database = {
           factory_order_id?: string;
           product_variant_id?: string;
           quantity?: number;
+          unit_cost?: number | null;
           created_at?: string;
         };
         Relationships: [
@@ -814,6 +866,14 @@ export type Database = {
       get_today_summary: {
         Args: Record<string, never>;
         Returns: Json;
+      };
+      get_money_report: {
+        Args: Record<string, never>;
+        Returns: Json;
+      };
+      set_factory_line_cost: {
+        Args: { p_line_id: string; p_unit_cost: number | null };
+        Returns: undefined;
       };
     };
 

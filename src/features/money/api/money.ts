@@ -20,12 +20,23 @@ export interface MoneyStatusBucket {
 }
 
 export interface MoneyReport {
-  total_active_value: number;
-  deposits_collected: number;
-  outstanding_balance: number;
+  // Customer side
+  customer_revenue: number;
+  customer_collected: number;
+  customer_outstanding: number;
   active_order_count: number;
   by_status: Partial<Record<OrderStatus, MoneyStatusBucket>>;
   orders: MoneyOrderRow[];
+
+  // Factory side
+  factory_cost_agreed: number;
+  factory_cost_lines_unknown: number;
+  factory_paid: number;
+  factory_outstanding: number;
+
+  // Profit
+  gross_profit_expected: number;
+  gross_margin_pct: number | null;
 }
 
 export async function getMoneyReport(
