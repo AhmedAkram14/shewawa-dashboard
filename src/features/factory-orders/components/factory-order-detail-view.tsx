@@ -1,11 +1,10 @@
 "use client";
 
-import { ArrowLeft, Banknote, Pencil } from "lucide-react";
+import { ArrowLeft, Banknote } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import { Truck } from "lucide-react";
@@ -13,7 +12,6 @@ import { RecommendationList } from "@/features/workflow/recommendation-list";
 import type { Recommendation } from "@/features/workflow/derive-recommendations";
 import { formatPrice } from "@/lib/format";
 import { useFactoryOrder } from "../hooks/use-factory-orders";
-import { useSetFactoryLineCost } from "../hooks/use-set-factory-line-cost";
 import type {
   FactoryOrderDetail,
   FactoryOrderLineDetail,
@@ -55,84 +53,6 @@ function totalReceivedForLine(fol: FactoryOrderLineDetail): number {
   return fol.factory_receipts
     .filter((r) => r.reversal_of === null)
     .reduce((s, r) => s + r.quantity, 0);
-}
-
-function LineCostEditor({
-  lineId,
-  unitCost,
-  factoryOrderId,
-}: {
-  lineId: string;
-  unitCost: number | null;
-  factoryOrderId: string;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(
-    unitCost != null ? (unitCost / 100).toFixed(2) : "",
-  );
-  const mutation = useSetFactoryLineCost(factoryOrderId);
-
-  function save() {
-    const parsed = parseFloat(value);
-    const piastres =
-      value.trim() === ""
-        ? null
-        : isNaN(parsed)
-          ? null
-          : Math.round(parsed * 100);
-    mutation.mutate(
-      { line_id: lineId, unit_cost: piastres },
-      { onSuccess: () => setEditing(false) },
-    );
-  }
-
-  if (!editing) {
-    return (
-      <button
-        onClick={() => {
-          setValue(unitCost != null ? (unitCost / 100).toFixed(2) : "");
-          setEditing(true);
-        }}
-        className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-      >
-        <span>
-          {unitCost != null ? `EGP ${formatPrice(unitCost)}/pc` : "Set cost"}
-        </span>
-        <Pencil className="h-3 w-3" />
-      </button>
-    );
-  }
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <span className="text-xs text-muted-foreground">EGP</span>
-      <Input
-        className="h-7 w-24 text-xs"
-        inputMode="decimal"
-        placeholder="0.00"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") save();
-          if (e.key === "Escape") setEditing(false);
-        }}
-        autoFocus
-      />
-      <button
-        onClick={save}
-        disabled={mutation.isPending}
-        className="text-xs font-medium text-primary hover:underline disabled:opacity-50"
-      >
-        Save
-      </button>
-      <button
-        onClick={() => setEditing(false)}
-        className="text-xs text-muted-foreground hover:text-foreground"
-      >
-        Cancel
-      </button>
-    </div>
-  );
 }
 
 interface Props {
@@ -239,14 +159,12 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
                   {!isComplete && <span>Remaining: {remaining}</span>}
                 </div>
 
-                {/* Per-line cost editor */}
-                <div className="mt-2">
-                  <LineCostEditor
-                    lineId={line.id}
-                    unitCost={line.unit_cost}
-                    factoryOrderId={id}
-                  />
-                </div>
+                {line.unit_cost != null && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    EGP {formatPrice(line.unit_cost)}/pc · total EGP{" "}
+                    {formatPrice(line.unit_cost * line.quantity)}
+                  </p>
+                )}
 
                 {activeReceipts.length > 0 && (
                   <ul className="mt-2 space-y-0.5">

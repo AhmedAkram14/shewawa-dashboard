@@ -65,7 +65,11 @@ export type FactoryOrderDetail = FactoryOrderRow & {
 
 export type PendingOrderLine = OrderLineRow & {
   orders: { order_number: number; customers: { name: string } };
-  product_variants: { name: string; products: { name: string } };
+  product_variants: {
+    name: string;
+    cost_price: number;
+    products: { name: string };
+  };
 };
 
 export async function getFactoryOrders(
@@ -109,7 +113,7 @@ export async function getPendingOrderLines(
     .from("order_lines")
     .select(
       `*, orders(order_number, customers(name)),
-      product_variants(name, products(name))`,
+      product_variants(name, cost_price, products(name))`,
     )
     .eq("status", "pending")
     .order("created_at");
@@ -125,6 +129,7 @@ export async function callCreateFactoryOrder(
     groups: {
       product_variant_id: string;
       order_line_ids: string[];
+      unit_cost?: number | null;
     }[];
   },
 ): Promise<string> {

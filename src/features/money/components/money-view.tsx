@@ -41,8 +41,8 @@ function SideCard({
   totalAccent,
 }: {
   title: string;
-  rows: { label: string; value: number; accent?: string }[];
-  total: number;
+  rows: { label: string; value: number | null; accent?: string }[];
+  total: number | null;
   totalLabel: string;
   totalAccent?: string;
 }) {
@@ -59,7 +59,7 @@ function SideCard({
           >
             <span className="text-sm text-muted-foreground">{row.label}</span>
             <span className={`text-sm font-semibold ${row.accent ?? ""}`}>
-              EGP {formatPrice(row.value)}
+              {row.value == null ? "—" : `EGP ${formatPrice(row.value)}`}
             </span>
           </div>
         ))}
@@ -68,7 +68,9 @@ function SideCard({
         className={`flex items-baseline justify-between rounded-b-xl px-4 py-3 ${totalAccent ?? "bg-muted/40"}`}
       >
         <span className="text-sm font-medium">{totalLabel}</span>
-        <span className="text-base font-bold">EGP {formatPrice(total)}</span>
+        <span className="text-base font-bold">
+          {total == null ? "—" : `EGP ${formatPrice(total)}`}
+        </span>
       </div>
     </div>
   );
@@ -113,15 +115,27 @@ function StatusRow({
 
 export function MoneyView({ report }: { report: MoneyReport }) {
   const activeStatuses = STATUS_ORDER.filter((s) => report.by_status[s]);
-  const profitPositive = report.gross_profit_expected >= 0;
+  const costsFullyUnknown =
+    report.factory_cost_lines_unknown > 0 && report.factory_cost_agreed === 0;
+  // Use at least factory_paid as the cost floor when unit costs aren't all set
+  const effectiveFactoryCost = Math.max(
+    report.factory_cost_agreed,
+    report.factory_paid,
+  );
+  const displayProfit = costsFullyUnknown
+    ? null
+    : report.customer_revenue - effectiveFactoryCost;
+  const profitPositive = displayProfit == null || displayProfit >= 0;
 
   return (
     <div className="mx-auto max-w-lg space-y-6 p-4 pb-24">
       <div>
         <h1 className="text-2xl font-semibold leading-tight">Money</h1>
         <p className="text-sm text-muted-foreground">
-          {report.active_order_count} active order
-          {report.active_order_count !== 1 ? "s" : ""} · live cash flow
+          {report.active_order_count > 0
+            ? `${report.active_order_count} order${report.active_order_count !== 1 ? "s" : ""} in pipeline · `
+            : "No orders in pipeline · "}
+          all-time cash flow
         </p>
       </div>
 
@@ -156,14 +170,24 @@ export function MoneyView({ report }: { report: MoneyReport }) {
           },
           {
             label: "Still owed to factories",
-            value: report.factory_outstanding,
+            // unknown when no unit costs are set — don't show misleading 0
+            value:
+              report.factory_cost_lines_unknown > 0 &&
+              report.factory_cost_agreed === 0
+                ? null
+                : report.factory_outstanding,
             accent:
               report.factory_outstanding > 0
                 ? "text-coral-dk"
                 : "text-muted-foreground",
           },
         ]}
-        total={report.factory_cost_agreed}
+        total={
+          report.factory_cost_lines_unknown > 0 &&
+          report.factory_cost_agreed === 0
+            ? null
+            : report.factory_paid + report.factory_outstanding
+        }
         totalLabel="Total factory cost"
         totalAccent="bg-red-50 text-red-900"
       />
@@ -197,17 +221,23 @@ export function MoneyView({ report }: { report: MoneyReport }) {
           </p>
         </div>
         <div className="mt-2 flex items-baseline gap-3">
-          <p
-            className={`text-3xl font-bold leading-none ${
-              profitPositive ? "text-green-800" : "text-red-700"
-            }`}
-          >
-            EGP {formatPrice(Math.abs(report.gross_profit_expected))}
-          </p>
-          {!profitPositive && (
+          {displayProfit == null ? (
+            <p className="text-3xl font-bold leading-none text-muted-foreground">
+              —
+            </p>
+          ) : (
+            <p
+              className={`text-3xl font-bold leading-none ${
+                profitPositive ? "text-green-800" : "text-red-700"
+              }`}
+            >
+              EGP {formatPrice(Math.abs(displayProfit))}
+            </p>
+          )}
+          {displayProfit != null && !profitPositive && (
             <span className="text-sm font-medium text-red-600">loss</span>
           )}
-          {report.gross_margin_pct != null && (
+          {displayProfit != null && report.gross_margin_pct != null && (
             <span
               className={`text-sm font-semibold ${
                 profitPositive ? "text-green-700" : "text-red-600"
@@ -218,9 +248,9 @@ export function MoneyView({ report }: { report: MoneyReport }) {
           )}
         </div>
         <p className="mt-1 text-xs text-muted-foreground">
-          Revenue EGP {formatPrice(report.customer_revenue)} − Factory cost EGP{" "}
-          {formatPrice(report.factory_cost_agreed)}
-          {report.factory_cost_lines_unknown > 0 && " (partial)"}
+          {displayProfit == null
+            ? "Set unit costs on factory orders to calculate profit"
+            : `Revenue EGP ${formatPrice(report.customer_revenue)} − Factory cost EGP ${formatPrice(effectiveFactoryCost)}${report.factory_cost_lines_unknown > 0 ? " (partial)" : ""}`}
         </p>
       </div>
 

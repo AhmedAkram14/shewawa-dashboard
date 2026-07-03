@@ -90,11 +90,11 @@ export function NewFactoryOrderView() {
     });
   }
 
-  function toggleLine(id: string) {
+  function toggleLine(lineId: string) {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
-      else next.add(id);
+      if (next.has(lineId)) next.delete(lineId);
+      else next.add(lineId);
       return next;
     });
   }
@@ -127,6 +127,7 @@ export function NewFactoryOrderView() {
         order_line_ids: g.lines
           .filter((l) => selectedIds.has(l.id))
           .map((l) => l.id),
+        unit_cost: g.lines[0]?.product_variants.cost_price || null,
       }))
       .filter((g) => g.order_line_ids.length > 0);
 
@@ -249,6 +250,27 @@ export function NewFactoryOrderView() {
                       {groupAllSelected ? "Clear" : "Select All"}
                     </Button>
                   </div>
+
+                  {/* Cost summary — shown when any line in group is selected */}
+                  {groupSelectedCount > 0 && (
+                    <div className="flex items-center justify-between border-b bg-muted/30 px-3 py-1.5 text-xs text-muted-foreground">
+                      <span>
+                        {groupSelectedQty} pcs × EGP{" "}
+                        {(
+                          group.lines[0]?.product_variants.cost_price / 100
+                        ).toFixed(2)}
+                        /pc
+                      </span>
+                      <span className="font-medium text-foreground">
+                        = EGP{" "}
+                        {(
+                          ((group.lines[0]?.product_variants.cost_price ?? 0) *
+                            groupSelectedQty) /
+                          100
+                        ).toFixed(2)}
+                      </span>
+                    </div>
+                  )}
 
                   {/* Individual order lines */}
                   <ul className="divide-y">
