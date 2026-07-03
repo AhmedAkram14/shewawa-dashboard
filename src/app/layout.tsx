@@ -28,6 +28,10 @@ export const metadata: Metadata = {
     title: "SHE WAWA",
   },
   icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
     apple: "/apple-touch-icon.png",
   },
 };
