@@ -1,8 +1,4 @@
-"use client";
-
-import { Search } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { SearchButton } from "@/components/search/search-button";
 
 export function Header() {
   return (
@@ -13,9 +9,7 @@ export function Header() {
         </span>
 
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" aria-label="Search" disabled>
-            <Search className="h-4 w-4" />
-          </Button>
+          <SearchButton />
         </div>
       </div>
     </header>
