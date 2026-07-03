@@ -55,9 +55,9 @@ export function DeliveriesView({ initialData }: Props) {
           <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Active
           </p>
-          <ul className="divide-y rounded-lg border">
+          <ul className="space-y-2">
             {active.map((d) => (
-              <DeliveryRow key={d.id} delivery={d} />
+              <DeliveryCard key={d.id} delivery={d} />
             ))}
           </ul>
         </section>
@@ -68,9 +68,9 @@ export function DeliveriesView({ initialData }: Props) {
           <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Completed
           </p>
-          <ul className="divide-y rounded-lg border">
+          <ul className="space-y-2">
             {completed.map((d) => (
-              <DeliveryRow key={d.id} delivery={d} />
+              <DeliveryCard key={d.id} delivery={d} />
             ))}
           </ul>
         </section>
@@ -81,10 +81,10 @@ export function DeliveriesView({ initialData }: Props) {
   );
 }
 
-function DeliveryRow({ delivery }: { delivery: DeliveryWithOrderCount }) {
+function DeliveryCard({ delivery }: { delivery: DeliveryWithOrderCount }) {
   const orderCount = delivery.orders.length;
   const customerNames = delivery.orders
-    .map((o) => o.customers.name)
+    .map((o) => o.customers?.name)
     .filter(Boolean)
     .join(", ");
   const date = new Date(delivery.created_at).toLocaleDateString("en-EG", {
@@ -96,17 +96,19 @@ function DeliveryRow({ delivery }: { delivery: DeliveryWithOrderCount }) {
     <li>
       <Link
         href={`/deliveries/${delivery.id}`}
-        className="block p-3 hover:bg-muted/40"
+        className="block rounded-xl border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:bg-accent"
       >
-        <div className="flex items-start justify-between gap-2">
-          <span className="font-semibold">
+        <div className="flex items-start justify-between gap-3">
+          <p className="font-semibold leading-snug">
             Delivery #{delivery.delivery_number}
-          </span>
+          </p>
           <DeliveryStatusBadge status={delivery.status} />
         </div>
-        <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-          {customerNames && <span className="truncate">{customerNames}</span>}
-          <span className="ml-auto shrink-0 text-xs">
+        <div className="mt-3 flex items-center justify-between gap-2 border-t pt-3 text-sm">
+          <span className="truncate text-muted-foreground">
+            {customerNames || "—"}
+          </span>
+          <span className="shrink-0 text-xs text-muted-foreground">
             {date} · {orderCount} order{orderCount !== 1 ? "s" : ""}
           </span>
         </div>

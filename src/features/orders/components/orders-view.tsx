@@ -37,7 +37,7 @@ export function OrdersView({ initialData }: Props) {
           </p>
         </div>
       ) : (
-        <ul className="divide-y">
+        <ul className="space-y-2">
           {orders.map((order) => {
             const { total, pcs, balanceDue } = orderTotals(order);
             const date = new Date(order.created_at).toLocaleDateString(
@@ -48,32 +48,36 @@ export function OrdersView({ initialData }: Props) {
               <li key={order.id}>
                 <Link
                   href={`/orders/${order.id}`}
-                  className="block py-3 transition-colors"
+                  className="block rounded-xl border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:bg-accent"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="font-semibold">
-                      #{order.order_number} — {order.customers.name}
-                    </span>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold leading-snug">
+                        #{order.order_number} — {order.customers.name}
+                      </p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">
+                        {date}
+                      </p>
+                    </div>
                     <OrderStatusBadge status={order.status} />
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-sm text-muted-foreground">
-                    {pcs > 0 && <span>{pcs} pcs</span>}
-                    {total > 0 && (
-                      <>
-                        {pcs > 0 && <span>·</span>}
-                        <span>EGP {formatPrice(total)}</span>
-                      </>
-                    )}
-                    {balanceDue > 0 && (
-                      <>
-                        <span>·</span>
-                        <span className="font-medium text-foreground">
+                  {pcs > 0 && (
+                    <div className="mt-3 flex items-center gap-3 border-t pt-3 text-sm">
+                      <span className="text-muted-foreground">{pcs} pcs</span>
+                      <span className="text-muted-foreground">
+                        EGP {formatPrice(total)}
+                      </span>
+                      {balanceDue > 0 ? (
+                        <span className="ml-auto font-semibold text-coral-dk">
                           EGP {formatPrice(balanceDue)} due
                         </span>
-                      </>
-                    )}
-                    <span className="ml-auto text-xs">{date}</span>
-                  </div>
+                      ) : (
+                        <span className="ml-auto text-xs text-green-600">
+                          Paid in full
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </Link>
               </li>
             );

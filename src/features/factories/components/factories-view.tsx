@@ -43,7 +43,7 @@ export function FactoriesView({ initialData }: Props) {
           </Button>
         </div>
       ) : (
-        <ul className="divide-y">
+        <ul className="space-y-2">
           {factories.map((f) => {
             const openOrders = f.factory_orders.filter(
               (fo) => fo.status !== "closed",
@@ -52,20 +52,20 @@ export function FactoriesView({ initialData }: Props) {
               <li key={f.id}>
                 <Link
                   href={`/factories/${f.id}`}
-                  className="block py-3 transition-colors"
+                  className="block rounded-xl border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:bg-accent"
                 >
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold">{f.name}</span>
                     {openOrders > 0 && (
-                      <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                      <span className="shrink-0 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-800">
                         {openOrders} open
                       </span>
                     )}
                   </div>
                   {f.contact && (
-                    <p className="mt-0.5 text-sm text-muted-foreground">
+                    <div className="mt-3 border-t pt-3 text-sm text-muted-foreground">
                       {f.contact}
-                    </p>
+                    </div>
                   )}
                 </Link>
               </li>
