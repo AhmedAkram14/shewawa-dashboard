@@ -13,6 +13,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatPrice } from "@/lib/format";
 import { getTodaySummary } from "@/features/today/api/today";
 import type { TodaySummary } from "@/features/today/api/today";
+import { WorkflowRecommendations } from "@/features/workflow/workflow-recommendations";
 
 export const metadata: Metadata = { title: "Today — SHE WAWA" };
 
@@ -89,6 +90,9 @@ export default async function TodayPage() {
         </p>
       ) : summary ? (
         <>
+          {/* Workflow recommendations — live via TanStack Query, seeded from SSR data */}
+          <WorkflowRecommendations initialSummary={summary} />
+
           {/* Order pipeline */}
           <section>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">

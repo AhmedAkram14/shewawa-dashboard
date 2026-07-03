@@ -11,6 +11,8 @@ export interface TodaySummary {
   total_active_value: number;
   deposits_on_active: number;
   outstanding_balance: number;
+  available_stock_count: number;
+  pending_lines_count: number;
 }
 
 export async function getTodaySummary(

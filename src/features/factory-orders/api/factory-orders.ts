@@ -32,6 +32,8 @@ export type AllocationOrderLine = {
   orders: {
     order_number: number;
     created_at: string;
+    status:
+      "pending" | "ready" | "out_for_delivery" | "delivered" | "cancelled";
     customers: { name: string };
   };
 };
@@ -80,7 +82,7 @@ export async function getFactoryOrder(
         product_variants(id, name, products(id, name)),
         factory_receipts(id, quantity, received_at, reversal_of, notes),
         order_lines(id, order_id, quantity, allocated_quantity, status,
-          orders(order_number, created_at, customers(name)))
+          orders(order_number, created_at, status, customers(name)))
       )`,
     )
     .eq("id", id)

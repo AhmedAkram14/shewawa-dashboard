@@ -167,6 +167,78 @@
   }
 }
 
+/* ── SHE WAWA loading animations ───────────────────────────────────── */
+
+@keyframes sw-flight {
+  /* Hover beats at rest */
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  7% {
+    transform: translate(0, -4%) scale(1.03) rotate(0deg);
+    opacity: 1;
+  }
+  14% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  21% {
+    transform: translate(0, -4%) scale(1.03) rotate(0deg);
+    opacity: 1;
+  }
+  28% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+  /* Lift-off */
+  40% {
+    transform: translate(2%, -18%) scale(0.86) rotate(-12deg);
+    opacity: 1;
+  }
+  /* Soar out */
+  52% {
+    transform: translate(5%, -120%) scale(0.08) rotate(-26deg);
+    opacity: 0;
+  }
+  /* Invisible at peak */
+  57% {
+    transform: translate(5%, -120%) scale(0.08) rotate(-26deg);
+    opacity: 0;
+  }
+  /* Return */
+  70% {
+    transform: translate(2%, -18%) scale(0.86) rotate(-12deg);
+    opacity: 1;
+  }
+  /* Land */
+  82%,
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes sw-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.65);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.sw-flight {
+  animation: sw-flight 3.5s cubic-bezier(0.45, 0.05, 0.35, 0.95) infinite;
+  will-change: transform;
+}
+.sw-pulse {
+  animation: sw-pulse 1.4s ease-in-out infinite;
+}
+
 @layer utilities {
   .no-scrollbar {
     -ms-overflow-style: none;

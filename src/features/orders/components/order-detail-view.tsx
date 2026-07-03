@@ -8,11 +8,48 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/lib/format";
 
+import { Package, Truck } from "lucide-react";
+import { RecommendationList } from "@/features/workflow/recommendation-list";
+import type { Recommendation } from "@/features/workflow/derive-recommendations";
 import { useOrder } from "../hooks/use-orders";
 import type { OrderDetail } from "../api/orders";
 import { OrderLineStatusBadge, OrderStatusBadge } from "./order-status-badge";
 import { EditOrderSheet } from "./edit-order-sheet";
 import { CancelOrderSheet } from "./cancel-order-sheet";
+
+function getOrderRecommendations(order: OrderDetail): Recommendation[] {
+  const recs: Recommendation[] = [];
+
+  const pendingUnassigned = order.order_lines.filter(
+    (l) => l.status === "pending" && l.factory_order_line_id === null,
+  ).length;
+
+  if (pendingUnassigned > 0) {
+    recs.push({
+      id: "send-to-factory",
+      priority: 1,
+      icon: Package,
+      iconClass: "text-purple-500",
+      message: `${pendingUnassigned} line${pendingUnassigned !== 1 ? "s" : ""} in this order need${pendingUnassigned === 1 ? "s" : ""} to go to factory`,
+      actionLabel: "Create Factory Order",
+      href: "/factory-orders",
+    });
+  }
+
+  if (order.status === "ready") {
+    recs.push({
+      id: "create-delivery",
+      priority: 1,
+      icon: Truck,
+      iconClass: "text-blue-500",
+      message: "This order is packed and ready for delivery",
+      actionLabel: "Create Delivery",
+      href: "/deliveries",
+    });
+  }
+
+  return recs;
+}
 
 interface Props {
   id: string;
@@ -183,6 +220,13 @@ export function OrderDetailView({ id, initialData }: Props) {
           Cancel Order
         </Button>
       )}
+
+      {(() => {
+        const recs = getOrderRecommendations(order);
+        return recs.length > 0 ? (
+          <RecommendationList recommendations={recs} label="What's Next" />
+        ) : null;
+      })()}
 
       <EditOrderSheet
         open={editOpen}

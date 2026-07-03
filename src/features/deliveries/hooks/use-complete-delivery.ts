@@ -2,8 +2,10 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { orderKeys } from "@/features/orders/hooks/use-orders";
+import { todayKeys } from "@/features/today/hooks/use-today-summary";
 
 import {
   callCompleteDelivery,
@@ -18,12 +20,24 @@ export function useCompleteDelivery(deliveryId: string) {
     mutationFn: (
       args: { failedOrders: FailedOrderOutcome[] } = { failedOrders: [] },
     ) => callCompleteDelivery(createClient(), deliveryId, args.failedOrders),
-    onSuccess: () => {
+    onMutate: () => ({ toastId: toast.loading("Completing delivery…") }),
+    onSuccess: (_, args, ctx) => {
       queryClient.invalidateQueries({ queryKey: deliveryKeys.all });
       queryClient.invalidateQueries({
         queryKey: deliveryKeys.detail(deliveryId),
       });
       queryClient.invalidateQueries({ queryKey: orderKeys.all });
+      queryClient.invalidateQueries({ queryKey: todayKeys.summary });
+      const returned = args.failedOrders.length;
+      if (returned > 0) {
+        toast.success(
+          `Delivery completed — ${returned} order${returned !== 1 ? "s" : ""} returned to ready queue`,
+          { id: ctx?.toastId },
+        );
+      } else {
+        toast.success("Delivery completed successfully", { id: ctx?.toastId });
+      }
     },
+    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
   });
 }

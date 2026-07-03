@@ -7,6 +7,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
+import { Truck } from "lucide-react";
+import { RecommendationList } from "@/features/workflow/recommendation-list";
+import type { Recommendation } from "@/features/workflow/derive-recommendations";
 import { useFactoryOrder } from "../hooks/use-factory-orders";
 import type {
   FactoryOrderDetail,
@@ -15,6 +18,34 @@ import type {
 import { FactoryOrderStatusBadge } from "./factory-order-status-badge";
 import { RecordReceiptSheet } from "./record-receipt-sheet";
 import { AppendFactoryOrderSheet } from "./append-factory-order-sheet";
+
+function getFactoryOrderRecommendations(
+  fo: FactoryOrderDetail,
+): Recommendation[] {
+  const readyOrderIds = new Set<string>();
+  for (const fol of fo.factory_order_lines) {
+    for (const ol of fol.order_lines) {
+      if (ol.orders.status === "ready") {
+        readyOrderIds.add(ol.order_id);
+      }
+    }
+  }
+
+  if (readyOrderIds.size === 0) return [];
+
+  const n = readyOrderIds.size;
+  return [
+    {
+      id: "create-delivery",
+      priority: 1,
+      icon: Truck,
+      iconClass: "text-blue-500",
+      message: `${n} order${n !== 1 ? "s" : ""} from this batch ${n !== 1 ? "are" : "is"} ready for delivery`,
+      actionLabel: "Create Delivery",
+      href: "/deliveries",
+    },
+  ];
+}
 
 interface Props {
   id: string;
@@ -169,6 +200,13 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
           </Button>
         </div>
       )}
+
+      {(() => {
+        const recs = getFactoryOrderRecommendations(fo);
+        return recs.length > 0 ? (
+          <RecommendationList recommendations={recs} label="What's Next" />
+        ) : null;
+      })()}
 
       <RecordReceiptSheet
         open={receiptOpen}

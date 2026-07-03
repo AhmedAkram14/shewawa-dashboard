@@ -3,7 +3,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { todayKeys } from "@/features/today/hooks/use-today-summary";
 
 import { callCancelOrder } from "../api/orders";
 import { orderKeys } from "./use-orders";
@@ -14,10 +16,14 @@ export function useCancelOrder(orderId: string) {
 
   return useMutation({
     mutationFn: () => callCancelOrder(createClient(), orderId),
-    onSuccess: () => {
+    onMutate: () => ({ toastId: toast.loading("Cancelling order…") }),
+    onSuccess: (_, __, ctx) => {
       queryClient.invalidateQueries({ queryKey: orderKeys.all });
       queryClient.invalidateQueries({ queryKey: orderKeys.detail(orderId) });
+      queryClient.invalidateQueries({ queryKey: todayKeys.summary });
+      toast.success("Order cancelled", { id: ctx?.toastId });
       router.push("/orders");
     },
+    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
   });
 }

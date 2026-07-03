@@ -2,8 +2,10 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
+import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { orderKeys } from "@/features/orders/hooks/use-orders";
+import { todayKeys } from "@/features/today/hooks/use-today-summary";
 
 import { callAppendFactoryOrder } from "../api/factory-orders";
 import { factoryOrderKeys } from "./use-factory-orders";
@@ -17,7 +19,8 @@ export function useAppendFactoryOrder(factoryOrderId: string) {
         factory_order_id: factoryOrderId,
         order_line_ids: orderLineIds,
       }),
-    onSuccess: () => {
+    onMutate: () => ({ toastId: toast.loading("Adding orders…") }),
+    onSuccess: (_, __, ctx) => {
       queryClient.invalidateQueries({
         queryKey: factoryOrderKeys.detail(factoryOrderId),
       });
@@ -26,6 +29,9 @@ export function useAppendFactoryOrder(factoryOrderId: string) {
         queryKey: factoryOrderKeys.pendingLines,
       });
       queryClient.invalidateQueries({ queryKey: orderKeys.all });
+      queryClient.invalidateQueries({ queryKey: todayKeys.summary });
+      toast.success("Orders added to factory order", { id: ctx?.toastId });
     },
+    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
   });
 }

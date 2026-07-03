@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "@/lib/format";
 
+import { WorkflowRecommendations } from "@/features/workflow/workflow-recommendations";
 import type { DeliveryDetail } from "../api/deliveries";
 import { useDelivery } from "../hooks/use-deliveries";
 import { useDispatchDelivery } from "../hooks/use-dispatch-delivery";
@@ -192,6 +193,10 @@ export function DeliveryDetailView({ id, initialData }: Props) {
             )}
           </div>
         </>
+      )}
+
+      {delivery.status === "completed" && (
+        <WorkflowRecommendations limit={1} label="What's Next" />
       )}
 
       <CompleteDeliverySheet
