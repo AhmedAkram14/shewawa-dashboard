@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-import type { Database } from "@/lib/supabase/database.types";
+import type { Database, Json } from "@/lib/supabase/database.types";
 
 type DB = SupabaseClient<Database>;
 
@@ -108,8 +108,7 @@ export async function callCompleteDelivery(
 ): Promise<void> {
   const { error } = await supabase.rpc("complete_delivery", {
     p_delivery_id: deliveryId,
-    p_failed_orders:
-      failedOrders as unknown as import("@/lib/supabase/database.types").Json,
+    p_failed_orders: failedOrders as unknown as Json,
   });
   if (error) throw error;
 }
