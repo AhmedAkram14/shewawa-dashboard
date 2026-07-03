@@ -124,6 +124,17 @@ export async function callCreateFactoryOrder(
   return data as string;
 }
 
+export async function callAppendFactoryOrder(
+  supabase: DB,
+  args: { factory_order_id: string; order_line_ids: string[] },
+): Promise<void> {
+  const { error } = await supabase.rpc("append_factory_order", {
+    p_factory_order_id: args.factory_order_id,
+    p_order_line_ids: args.order_line_ids,
+  });
+  if (error) throw error;
+}
+
 export async function callRecordFactoryReceipts(
   supabase: DB,
   args: {

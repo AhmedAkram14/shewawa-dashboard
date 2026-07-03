@@ -745,6 +745,13 @@ export type Database = {
         };
         Returns: string;
       };
+      append_factory_order: {
+        Args: {
+          p_factory_order_id: string;
+          p_order_line_ids: string[];
+        };
+        Returns: undefined;
+      };
       record_factory_receipts: {
         Args: {
           p_factory_order_id: string;

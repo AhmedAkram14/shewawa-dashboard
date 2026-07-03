@@ -14,6 +14,7 @@ import type {
 } from "../api/factory-orders";
 import { FactoryOrderStatusBadge } from "./factory-order-status-badge";
 import { RecordReceiptSheet } from "./record-receipt-sheet";
+import { AppendFactoryOrderSheet } from "./append-factory-order-sheet";
 
 interface Props {
   id: string;
@@ -29,6 +30,7 @@ function totalReceivedForLine(fol: FactoryOrderLineDetail): number {
 export function FactoryOrderDetailView({ id, initialData }: Props) {
   const { data: fo } = useFactoryOrder(id, initialData);
   const [receiptOpen, setReceiptOpen] = useState(false);
+  const [appendOpen, setAppendOpen] = useState(false);
 
   if (!fo) return null;
 
@@ -154,15 +156,31 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
       </p>
 
       {fo.status === "open" && (
-        <Button className="w-full" onClick={() => setReceiptOpen(true)}>
-          Record Factory Receipt
-        </Button>
+        <div className="flex flex-col gap-2">
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setAppendOpen(true)}
+          >
+            Add Orders
+          </Button>
+          <Button className="w-full" onClick={() => setReceiptOpen(true)}>
+            Record Factory Receipt
+          </Button>
+        </div>
       )}
 
       <RecordReceiptSheet
         open={receiptOpen}
         onOpenChange={setReceiptOpen}
         fo={fo}
+      />
+
+      <AppendFactoryOrderSheet
+        open={appendOpen}
+        onOpenChange={setAppendOpen}
+        factoryOrderId={fo.id}
+        factoryOrderNumber={fo.factory_order_number}
       />
     </div>
   );
