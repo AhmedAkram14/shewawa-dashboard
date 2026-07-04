@@ -15,6 +15,7 @@ import { useDelivery } from "../hooks/use-deliveries";
 import { useDispatchDelivery } from "../hooks/use-dispatch-delivery";
 import { CompleteDeliverySheet } from "./complete-delivery-sheet";
 import { friendlyError } from "@/lib/db-error";
+import { StatusStepper } from "@/components/ui/status-stepper";
 import { DeliveryStatusBadge } from "./delivery-status-badge";
 
 interface Props {
@@ -72,6 +73,16 @@ export function DeliveryDetailView({ id, initialData }: Props) {
           <DeliveryStatusBadge status={delivery.status} />
         </div>
       </div>
+
+      {/* Status stepper */}
+      <StatusStepper
+        steps={[
+          { key: "pending", label: "Pending" },
+          { key: "dispatched", label: "Dispatched" },
+          { key: "completed", label: "Completed" },
+        ]}
+        currentKey={delivery.status}
+      />
 
       {/* Timestamps */}
       <section className="space-y-1 text-sm text-muted-foreground">

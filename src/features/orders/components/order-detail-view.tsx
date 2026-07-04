@@ -12,6 +12,7 @@ import { formatPrice } from "@/lib/format";
 import { Package, Truck } from "lucide-react";
 import { RecommendationList } from "@/features/workflow/recommendation-list";
 import type { Recommendation } from "@/features/workflow/derive-recommendations";
+import { StatusStepper } from "@/components/ui/status-stepper";
 import { useOrder } from "../hooks/use-orders";
 import type { OrderDetail } from "../api/orders";
 import { OrderLineStatusBadge, OrderStatusBadge } from "./order-status-badge";
@@ -111,6 +112,18 @@ export function OrderDetailView({ id, initialData }: Props) {
           </div>
         </div>
       </div>
+
+      {/* Status stepper */}
+      <StatusStepper
+        steps={[
+          { key: "pending", label: "Pending" },
+          { key: "ready", label: "Ready" },
+          { key: "out_for_delivery", label: "Out for Delivery" },
+          { key: "delivered", label: "Delivered" },
+        ]}
+        currentKey={order.status}
+        cancelledKey="cancelled"
+      />
 
       {/* Customer */}
       <section className="rounded-lg border p-3">
