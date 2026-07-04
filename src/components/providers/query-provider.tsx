@@ -2,7 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import { createClient } from "@/lib/supabase/client";
 
 export function QueryProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -10,15 +12,31 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Data is considered fresh for 60 seconds before a background
-            // refetch is triggered. Individual hooks override this per spec
-            // (e.g. money summary uses a shorter staleTime).
             staleTime: 60 * 1000,
             refetchOnWindowFocus: true,
           },
         },
       }),
   );
+
+  const currentUserId = useRef<string | null | undefined>(undefined);
+
+  useEffect(() => {
+    const supabase = createClient();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      const newUserId = session?.user?.id ?? null;
+      if (
+        currentUserId.current !== undefined &&
+        currentUserId.current !== newUserId
+      ) {
+        queryClient.clear();
+      }
+      currentUserId.current = newUserId;
+    });
+    return () => subscription.unsubscribe();
+  }, [queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
