@@ -1,12 +1,26 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 
+import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 
 import { useOrders } from "../hooks/use-orders";
-import type { OrderWithCustomer } from "../api/orders";
+import type { OrderWithCustomer, OrderRow } from "../api/orders";
 import { OrderStatusBadge } from "./order-status-badge";
+
+type OrderStatus = OrderRow["status"];
+type Filter = "all" | OrderStatus;
+
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "pending", label: "Pending" },
+  { key: "ready", label: "Ready" },
+  { key: "out_for_delivery", label: "Out for Delivery" },
+  { key: "delivered", label: "Delivered" },
+  { key: "cancelled", label: "Cancelled" },
+];
 
 interface Props {
   initialData: OrderWithCustomer[];
@@ -24,21 +38,61 @@ function orderTotals(order: OrderWithCustomer) {
 
 export function OrdersView({ initialData }: Props) {
   const { data: orders = [] } = useOrders(initialData);
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const filtered =
+    filter === "all" ? orders : orders.filter((o) => o.status === filter);
+
+  const countFor = (key: Filter) =>
+    key === "all"
+      ? orders.length
+      : orders.filter((o) => o.status === key).length;
 
   return (
     <div className="mx-auto max-w-lg p-4">
       <h1 className="mb-4 text-2xl font-semibold leading-tight">Orders</h1>
 
-      {orders.length === 0 ? (
+      {/* Filter pills */}
+      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+        {FILTERS.map((f) => {
+          const count = countFor(f.key);
+          if (f.key !== "all" && count === 0) return null;
+          return (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                filter === f.key
+                  ? "bg-coral text-white"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80",
+              )}
+            >
+              {f.label}
+              {f.key !== "all" && (
+                <span className="ml-1 opacity-70">{count}</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="py-16 text-center">
-          <p className="text-sm text-muted-foreground">No orders yet</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Tap + to create your first order
+          <p className="text-sm text-muted-foreground">
+            {filter === "all"
+              ? "No orders yet"
+              : `No ${FILTERS.find((f) => f.key === filter)?.label.toLowerCase()} orders`}
           </p>
+          {filter === "all" && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Tap + to create your first order
+            </p>
+          )}
         </div>
       ) : (
         <ul className="space-y-2">
-          {orders.map((order) => {
+          {filtered.map((order) => {
             const { total, pcs, balanceDue } = orderTotals(order);
             const date = new Date(order.created_at).toLocaleDateString(
               "en-EG",

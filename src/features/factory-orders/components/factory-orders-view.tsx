@@ -3,13 +3,27 @@
 import { ArrowLeft, Plus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/format";
 
 import { useFactoryOrders } from "../hooks/use-factory-orders";
-import type { FactoryOrderWithFactory } from "../api/factory-orders";
+import type {
+  FactoryOrderWithFactory,
+  FactoryOrderRow,
+} from "../api/factory-orders";
 import { FactoryOrderStatusBadge } from "./factory-order-status-badge";
+
+type FOStatus = FactoryOrderRow["status"];
+type Filter = "all" | FOStatus;
+
+const FILTERS: { key: Filter; label: string }[] = [
+  { key: "all", label: "All" },
+  { key: "open", label: "Open" },
+  { key: "closed", label: "Closed" },
+];
 
 interface Props {
   initialData: FactoryOrderWithFactory[];
@@ -18,6 +32,15 @@ interface Props {
 export function FactoryOrdersView({ initialData }: Props) {
   const router = useRouter();
   const { data: orders = [] } = useFactoryOrders(initialData);
+  const [filter, setFilter] = useState<Filter>("all");
+
+  const filtered =
+    filter === "all" ? orders : orders.filter((o) => o.status === filter);
+
+  const countFor = (key: Filter) =>
+    key === "all"
+      ? orders.length
+      : orders.filter((o) => o.status === key).length;
 
   return (
     <div className="mx-auto max-w-lg p-4">
@@ -38,21 +61,50 @@ export function FactoryOrdersView({ initialData }: Props) {
         </Button>
       </div>
 
-      {orders.length === 0 ? (
+      {/* Filter pills */}
+      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+        {FILTERS.map((f) => {
+          const count = countFor(f.key);
+          if (f.key !== "all" && count === 0) return null;
+          return (
+            <button
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={cn(
+                "shrink-0 rounded-full px-3 py-1 text-xs font-medium transition-colors",
+                filter === f.key
+                  ? "bg-coral text-white"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80",
+              )}
+            >
+              {f.label}
+              {f.key !== "all" && (
+                <span className="ml-1 opacity-70">{count}</span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {filtered.length === 0 ? (
         <div className="py-16 text-center">
           <p className="mb-4 text-sm text-muted-foreground">
-            No factory orders yet
+            {filter === "all"
+              ? "No factory orders yet"
+              : `No ${FILTERS.find((f) => f.key === filter)?.label.toLowerCase()} factory orders`}
           </p>
-          <Button
-            nativeButton={false}
-            render={<Link href="/factory-orders/new" />}
-          >
-            Send to factory
-          </Button>
+          {filter === "all" && (
+            <Button
+              nativeButton={false}
+              render={<Link href="/factory-orders/new" />}
+            >
+              Send to factory
+            </Button>
+          )}
         </div>
       ) : (
         <ul className="space-y-2">
-          {orders.map((fo) => {
+          {filtered.map((fo) => {
             const pcs = fo.factory_order_lines.reduce(
               (sum, l) => sum + l.quantity,
               0,
