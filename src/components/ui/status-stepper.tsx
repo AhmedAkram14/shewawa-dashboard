@@ -32,12 +32,12 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
       <div className="relative flex items-start">
         {/* Grey track */}
         <div
-          className="absolute top-5 h-[3px] rounded-full bg-border"
+          className="absolute top-3.5 h-0.5 rounded-full bg-border"
           style={{ left: `${lineStartPct}%`, width: `${lineWidthPct}%` }}
         />
         {/* Coral filled track */}
         <div
-          className="absolute top-5 h-[3px] rounded-full bg-coral transition-all duration-500"
+          className="absolute top-3.5 h-0.5 rounded-full bg-coral transition-all duration-500"
           style={{ left: `${lineStartPct}%`, width: `${progressPct}%` }}
         />
 
@@ -54,20 +54,20 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
               {/* Rounded-square icon */}
               <div
                 className={cn(
-                  "flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-300",
+                  "flex h-7 w-7 items-center justify-center rounded-xl transition-all duration-300",
                   isCompleted && "bg-coral shadow-sm",
                   isCurrent && "bg-coral shadow-lg",
                   isUpcoming && "bg-muted",
                 )}
               >
                 {isCompleted && (
-                  <Check className="h-5 w-5 text-white" strokeWidth={2.5} />
+                  <Check className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
                 )}
                 {isCurrent && (
-                  <div className="h-3.5 w-3.5 rounded-md bg-white/90" />
+                  <div className="h-2.5 w-2.5 rounded-sm bg-white/90" />
                 )}
                 {isUpcoming && (
-                  <div className="h-3.5 w-3.5 rounded-md bg-muted-foreground/25" />
+                  <div className="h-2.5 w-2.5 rounded-sm bg-muted-foreground/25" />
                 )}
               </div>
 
