@@ -27,7 +27,13 @@ ALTER TABLE public.orders
     'delivery_failed', 'refused'
   ));
 
--- ── 2. Migrate existing failed rows to granular outcomes ──────────────────────
+-- ── 2. Drop old outcome constraint before migrating data ─────────────────────
+-- Must come before the UPDATE so writing 'customer_not_home' / 'other' etc.
+-- does not violate the old check (which only allowed 'delivered' | 'failed').
+ALTER TABLE public.delivery_order_results
+  DROP CONSTRAINT IF EXISTS delivery_order_results_outcome_check;
+
+-- ── 3. Migrate existing failed rows to granular outcomes ──────────────────────
 UPDATE public.delivery_order_results
 SET outcome = CASE failure_reason
     WHEN 'refused'           THEN 'customer_refused'
@@ -38,9 +44,7 @@ SET outcome = CASE failure_reason
   END
 WHERE outcome = 'failed';
 
--- ── 3. Swap outcome CHECK constraint ─────────────────────────────────────────
-ALTER TABLE public.delivery_order_results
-  DROP CONSTRAINT IF EXISTS delivery_order_results_outcome_check;
+-- ── 4. Add new outcome CHECK constraint ──────────────────────────────────────
 ALTER TABLE public.delivery_order_results
   ADD CONSTRAINT delivery_order_results_outcome_check
   CHECK (outcome IN (
@@ -52,12 +56,12 @@ ALTER TABLE public.delivery_order_results
     'other'
   ));
 
--- ── 4. Drop now-redundant failure_reason column ───────────────────────────────
+-- ── 5. Drop now-redundant failure_reason column ───────────────────────────────
 -- outcome now fully encodes the reason; courier_notes carries free text.
 ALTER TABLE public.delivery_order_results
   DROP COLUMN IF EXISTS failure_reason;
 
--- ── 5. Widen available_stock.source constraint ────────────────────────────────
+-- ── 6. Widen available_stock.source constraint ────────────────────────────────
 ALTER TABLE public.available_stock
   DROP CONSTRAINT IF EXISTS available_stock_source_check;
 ALTER TABLE public.available_stock
@@ -67,7 +71,7 @@ ALTER TABLE public.available_stock
     'customer_refusal', 'customer_cancellation'
   ));
 
--- ── 6. Update create_delivery to accept delivery_failed orders ────────────────
+-- ── 7. Update create_delivery to accept delivery_failed orders ────────────────
 DROP FUNCTION IF EXISTS public.create_delivery(uuid[], text);
 
 CREATE OR REPLACE FUNCTION public.create_delivery(
@@ -126,7 +130,7 @@ $$;
 
 GRANT EXECUTE ON FUNCTION public.create_delivery(uuid[], text) TO authenticated;
 
--- ── 7. Replace complete_delivery with outcome-aware version ───────────────────
+-- ── 8. Replace complete_delivery with outcome-aware version ───────────────────
 DROP FUNCTION IF EXISTS public.complete_delivery(uuid, jsonb);
 
 CREATE OR REPLACE FUNCTION public.complete_delivery(
