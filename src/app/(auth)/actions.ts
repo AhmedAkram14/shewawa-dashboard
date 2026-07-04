@@ -9,3 +9,15 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect("/login");
 }
+
+export async function signInAsDemo() {
+  const email = process.env.DEMO_ACCOUNT_EMAIL;
+  const password = process.env.DEMO_ACCOUNT_PASSWORD;
+
+  if (!email || !password) redirect("/login");
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) redirect("/login");
+  redirect("/today");
+}
