@@ -64,6 +64,10 @@ export type FactoryOrderDetail = FactoryOrderRow & {
   factory_payments: FactoryPaymentRecord[];
 };
 
+export type FactoryOrderForFactory = FactoryOrderRow & {
+  factory_order_lines: { quantity: number; unit_cost: number | null }[];
+};
+
 export type PendingOrderLine = OrderLineRow & {
   orders: { order_number: number; customers: { name: string } };
   product_variants: {
@@ -72,6 +76,19 @@ export type PendingOrderLine = OrderLineRow & {
     products: { name: string };
   };
 };
+
+export async function getFactoryOrdersByFactory(
+  supabase: DB,
+  factoryId: string,
+): Promise<FactoryOrderForFactory[]> {
+  const { data, error } = await supabase
+    .from("factory_orders")
+    .select("*, factory_order_lines(quantity, unit_cost)")
+    .eq("factory_id", factoryId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data as FactoryOrderForFactory[];
+}
 
 export async function getFactoryOrders(
   supabase: DB,

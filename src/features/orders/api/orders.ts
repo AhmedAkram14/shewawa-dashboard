@@ -32,11 +32,28 @@ export type OrderDetail = OrderRow & {
   order_lines: OrderLineDetail[];
 };
 
+export type OrderForCustomer = OrderRow & {
+  order_lines: { quantity: number; unit_price: number }[];
+};
+
 export type ProductForPicker = {
   id: string;
   name: string;
   product_variants: { id: string; name: string; selling_price: number }[];
 };
+
+export async function getOrdersByCustomer(
+  supabase: DB,
+  customerId: string,
+): Promise<OrderForCustomer[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("*, order_lines(quantity, unit_price)")
+    .eq("customer_id", customerId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data as OrderForCustomer[];
+}
 
 export async function getOrders(supabase: DB): Promise<OrderWithCustomer[]> {
   const { data, error } = await supabase
