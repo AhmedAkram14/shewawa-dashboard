@@ -171,6 +171,10 @@
   h1 {
     font-family: var(--font-display, Georgia, serif);
   }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 }
 
 /* ── SHE WAWA loading animations ───────────────────────────────────── */
