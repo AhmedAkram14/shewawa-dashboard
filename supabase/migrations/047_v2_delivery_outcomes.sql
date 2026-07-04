@@ -34,14 +34,9 @@ ALTER TABLE public.delivery_order_results
   DROP CONSTRAINT IF EXISTS delivery_order_results_outcome_check;
 
 -- ── 3. Migrate existing failed rows to granular outcomes ──────────────────────
+-- failure_reason was dropped in a prior partial run, so map remaining rows to 'other'.
 UPDATE public.delivery_order_results
-SET outcome = CASE failure_reason
-    WHEN 'refused'           THEN 'customer_refused'
-    WHEN 'customer_not_home' THEN 'customer_not_home'
-    WHEN 'no_answer'         THEN 'customer_not_home'
-    WHEN 'rescheduled'       THEN 'customer_not_home'
-    ELSE                          'other'
-  END
+SET outcome = 'other'
 WHERE outcome = 'failed';
 
 -- ── 4. Add new outcome CHECK constraint ──────────────────────────────────────
