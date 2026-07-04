@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Deliveries — SHE WAWA" };
 export default async function DeliveriesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ new?: string }>;
+  searchParams: Promise<{ new?: string; order?: string }>;
 }) {
   const supabase = await createClient();
   const [deliveries, params] = await Promise.all([
@@ -18,6 +18,10 @@ export default async function DeliveriesPage({
   ]);
 
   return (
-    <DeliveriesView initialData={deliveries} autoOpen={params.new === "1"} />
+    <DeliveriesView
+      initialData={deliveries}
+      autoOpen={params.new === "1"}
+      preSelectedOrderId={params.order}
+    />
   );
 }

@@ -46,7 +46,7 @@ function getOrderRecommendations(order: OrderDetail): Recommendation[] {
       iconClass: "text-primary",
       message: "This order is packed and ready for delivery",
       actionLabel: "Create Delivery",
-      href: "/deliveries?new=1",
+      href: `/deliveries?new=1&order=${order.id}`,
     });
   }
 

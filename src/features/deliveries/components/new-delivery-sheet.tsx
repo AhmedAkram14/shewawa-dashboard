@@ -20,13 +20,20 @@ import { useCreateDelivery } from "../hooks/use-create-delivery";
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  preSelectedOrderId?: string;
 }
 
-export function NewDeliverySheet({ open, onOpenChange }: Props) {
+export function NewDeliverySheet({
+  open,
+  onOpenChange,
+  preSelectedOrderId,
+}: Props) {
   const { data: readyOrders = [] } = useReadyOrders();
   const mutation = useCreateDelivery();
 
-  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [selected, setSelected] = useState<Set<string>>(
+    () => new Set(preSelectedOrderId ? [preSelectedOrderId] : []),
+  );
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -41,7 +48,7 @@ export function NewDeliverySheet({ open, onOpenChange }: Props) {
 
   function handleOpen(isOpen: boolean) {
     if (!isOpen) {
-      setSelected(new Set());
+      setSelected(new Set(preSelectedOrderId ? [preSelectedOrderId] : []));
       setNotes("");
       setError(null);
     }

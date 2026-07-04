@@ -26,9 +26,14 @@ const FILTERS: { key: Filter; label: string }[] = [
 interface Props {
   initialData: DeliveryWithOrderCount[];
   autoOpen?: boolean;
+  preSelectedOrderId?: string;
 }
 
-export function DeliveriesView({ initialData, autoOpen = false }: Props) {
+export function DeliveriesView({
+  initialData,
+  autoOpen = false,
+  preSelectedOrderId,
+}: Props) {
   const router = useRouter();
   const { data: deliveries = [] } = useDeliveries(initialData);
   const [sheetOpen, setSheetOpen] = useState(autoOpen);
@@ -101,7 +106,11 @@ export function DeliveriesView({ initialData, autoOpen = false }: Props) {
         </ul>
       )}
 
-      <NewDeliverySheet open={sheetOpen} onOpenChange={setSheetOpen} />
+      <NewDeliverySheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        preSelectedOrderId={preSelectedOrderId}
+      />
     </div>
   );
 }
