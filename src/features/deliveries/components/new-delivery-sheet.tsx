@@ -112,6 +112,11 @@ export function NewDeliverySheet({ open, onOpenChange }: Props) {
                         <p className="font-medium">{order.customers.name}</p>
                         <p className="text-sm text-muted-foreground">
                           Order #{order.order_number}
+                          {order.status === "delivery_failed" && (
+                            <span className="ml-2 rounded-full bg-warn-bg px-1.5 py-0.5 text-xs font-medium text-warn-tx">
+                              Re-delivery
+                            </span>
+                          )}
                         </p>
                       </div>
                       <span className="text-sm text-muted-foreground">

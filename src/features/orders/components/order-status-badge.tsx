@@ -27,6 +27,14 @@ const ORDER_CONFIG: Record<OrderStatus, { label: string; className: string }> =
       label: "Cancelled",
       className: "bg-muted text-muted-foreground border-border",
     },
+    delivery_failed: {
+      label: "Delivery Failed",
+      className: "bg-warn-bg text-warn-tx border-warn-tx/30",
+    },
+    refused: {
+      label: "Refused",
+      className: "bg-danger-bg text-danger-tx border-danger-tx/30",
+    },
   };
 
 const LINE_CONFIG: Record<LineStatus, { label: string; className: string }> = {

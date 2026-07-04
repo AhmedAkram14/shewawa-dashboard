@@ -77,6 +77,8 @@ export function OrderDetailView({ id, initialData }: Props) {
     "out_for_delivery",
     "delivered",
     "cancelled",
+    "delivery_failed",
+    "refused",
   ] as const;
   const canEdit = !LOCKED_STATUSES.includes(
     order.status as (typeof LOCKED_STATUSES)[number],
@@ -122,7 +124,14 @@ export function OrderDetailView({ id, initialData }: Props) {
           { key: "delivered", label: "Delivered" },
         ]}
         currentKey={order.status}
-        cancelledKey="cancelled"
+        cancelledKey={["cancelled", "delivery_failed", "refused"]}
+        cancelledLabel={
+          order.status === "refused"
+            ? "Refused"
+            : order.status === "delivery_failed"
+              ? "Delivery Failed"
+              : "Cancelled"
+        }
       />
 
       {/* Customer */}

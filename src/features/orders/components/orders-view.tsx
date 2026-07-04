@@ -19,6 +19,8 @@ const FILTERS: { key: Filter; label: string }[] = [
   { key: "ready", label: "Ready" },
   { key: "out_for_delivery", label: "Out for Delivery" },
   { key: "delivered", label: "Delivered" },
+  { key: "delivery_failed", label: "Delivery Failed" },
+  { key: "refused", label: "Refused" },
   { key: "cancelled", label: "Cancelled" },
 ];
 

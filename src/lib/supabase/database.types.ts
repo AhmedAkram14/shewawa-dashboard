@@ -484,7 +484,9 @@ export type Database = {
             | "ready"
             | "out_for_delivery"
             | "delivered"
-            | "cancelled";
+            | "cancelled"
+            | "delivery_failed"
+            | "refused";
           delivery_id: string | null;
           deposit_amount: number;
           delivered_at: string | null;
@@ -502,7 +504,9 @@ export type Database = {
             | "ready"
             | "out_for_delivery"
             | "delivered"
-            | "cancelled";
+            | "cancelled"
+            | "delivery_failed"
+            | "refused";
           delivery_id?: string | null;
           deposit_amount?: number;
           delivered_at?: string | null;
@@ -519,7 +523,9 @@ export type Database = {
             | "ready"
             | "out_for_delivery"
             | "delivered"
-            | "cancelled";
+            | "cancelled"
+            | "delivery_failed"
+            | "refused";
           delivery_id?: string | null;
           deposit_amount?: number;
           delivered_at?: string | null;
@@ -668,14 +674,13 @@ export type Database = {
         Row: {
           delivery_id: string;
           order_id: string;
-          outcome: "delivered" | "failed";
-          failure_reason:
+          outcome:
+            | "delivered"
             | "customer_not_home"
-            | "no_answer"
-            | "rescheduled"
-            | "refused"
-            | "other"
-            | null;
+            | "wrong_address"
+            | "customer_refused"
+            | "customer_cancelled"
+            | "other";
           courier_notes: string | null;
           completed_at: string;
           created_at: string;
@@ -683,27 +688,25 @@ export type Database = {
         Insert: {
           delivery_id: string;
           order_id: string;
-          outcome: "delivered" | "failed";
-          failure_reason?:
+          outcome:
+            | "delivered"
             | "customer_not_home"
-            | "no_answer"
-            | "rescheduled"
-            | "refused"
-            | "other"
-            | null;
+            | "wrong_address"
+            | "customer_refused"
+            | "customer_cancelled"
+            | "other";
           courier_notes?: string | null;
           completed_at?: string;
           created_at?: string;
         };
         Update: {
-          outcome?: "delivered" | "failed";
-          failure_reason?:
+          outcome?:
+            | "delivered"
             | "customer_not_home"
-            | "no_answer"
-            | "rescheduled"
-            | "refused"
-            | "other"
-            | null;
+            | "wrong_address"
+            | "customer_refused"
+            | "customer_cancelled"
+            | "other";
           courier_notes?: string | null;
           completed_at?: string;
         };
@@ -733,7 +736,12 @@ export type Database = {
           business_id: string;
           product_variant_id: string;
           quantity: number;
-          source: "factory_surplus" | "cancellation" | "manual";
+          source:
+            | "factory_surplus"
+            | "cancellation"
+            | "manual"
+            | "customer_refusal"
+            | "customer_cancellation";
           notes: string | null;
           created_at: string;
         };
@@ -742,7 +750,12 @@ export type Database = {
           business_id?: string;
           product_variant_id: string;
           quantity: number;
-          source: "factory_surplus" | "cancellation" | "manual";
+          source:
+            | "factory_surplus"
+            | "cancellation"
+            | "manual"
+            | "customer_refusal"
+            | "customer_cancellation";
           notes?: string | null;
           created_at?: string;
         };

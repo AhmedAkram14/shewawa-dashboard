@@ -29,6 +29,7 @@ export type DeliveryDetail = DeliveryRow & {
 export type ReadyOrder = {
   id: string;
   order_number: number;
+  status: string;
   customers: { id: string; name: string };
   order_lines: { quantity: number }[];
 };
@@ -66,8 +67,10 @@ export async function getDelivery(
 export async function getReadyOrders(supabase: DB): Promise<ReadyOrder[]> {
   const { data, error } = await supabase
     .from("orders")
-    .select("id, order_number, customers(id, name), order_lines(quantity)")
-    .eq("status", "ready")
+    .select(
+      "id, order_number, status, customers(id, name), order_lines(quantity)",
+    )
+    .in("status", ["ready", "delivery_failed"])
     .order("created_at");
   if (error) throw error;
   return data as ReadyOrder[];
@@ -95,20 +98,28 @@ export async function callDispatchDelivery(
   if (error) throw error;
 }
 
-export type FailedOrderOutcome = {
+export type DeliveryOutcome =
+  | "delivered"
+  | "customer_not_home"
+  | "wrong_address"
+  | "customer_refused"
+  | "customer_cancelled"
+  | "other";
+
+export type OrderOutcome = {
   order_id: string;
-  failure_reason?: string | null;
-  courier_notes?: string | null;
+  outcome: DeliveryOutcome;
+  notes?: string | null;
 };
 
 export async function callCompleteDelivery(
   supabase: DB,
   deliveryId: string,
-  failedOrders: FailedOrderOutcome[] = [],
+  outcomes: OrderOutcome[],
 ): Promise<void> {
   const { error } = await supabase.rpc("complete_delivery", {
     p_delivery_id: deliveryId,
-    p_failed_orders: failedOrders as unknown as Json,
+    p_outcomes: outcomes as unknown as Json,
   });
   if (error) throw error;
 }

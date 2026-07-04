@@ -10,11 +10,24 @@ interface StepDef {
 interface Props {
   steps: StepDef[];
   currentKey: string;
-  cancelledKey?: string;
+  /** Key(s) that represent a terminal failure state (all steps go dim). */
+  cancelledKey?: string | string[];
+  /** Label shown below the stepper when in a cancelled/terminal state. Defaults to "Cancelled". */
+  cancelledLabel?: string;
 }
 
-export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
-  const isCancelled = !!cancelledKey && currentKey === cancelledKey;
+export function StatusStepper({
+  steps,
+  currentKey,
+  cancelledKey,
+  cancelledLabel = "Cancelled",
+}: Props) {
+  const cancelledKeys = cancelledKey
+    ? Array.isArray(cancelledKey)
+      ? cancelledKey
+      : [cancelledKey]
+    : [];
+  const isCancelled = cancelledKeys.includes(currentKey);
   const currentIndex = isCancelled
     ? -1
     : steps.findIndex((s) => s.key === currentKey);
@@ -51,7 +64,6 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
               key={step.key}
               className="relative z-10 flex flex-1 flex-col items-center gap-2"
             >
-              {/* Rounded-square icon */}
               <div
                 className={cn(
                   "flex h-7 w-7 items-center justify-center rounded-xl transition-all duration-300",
@@ -71,7 +83,6 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
                 )}
               </div>
 
-              {/* Label */}
               <p
                 className={cn(
                   "text-center text-xs leading-tight",
@@ -89,7 +100,7 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
 
       {isCancelled && (
         <p className="text-center text-xs font-semibold text-destructive">
-          Cancelled
+          {cancelledLabel}
         </p>
       )}
     </div>
