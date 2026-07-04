@@ -8,7 +8,6 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import {
   Sheet,
   SheetContent,
@@ -139,7 +138,17 @@ export function NewFactoryOrderView() {
         notes: notes.trim() || null,
         groups: groupsPayload,
       },
-      { onError: (err) => setError(err.message) },
+      {
+        onError: (err) => {
+          if (err.message.includes("factory_orders_one_open_per_factory")) {
+            setError(
+              "This factory already has an open factory order. Close it first, or add these items to the existing order.",
+            );
+          } else {
+            setError(err.message);
+          }
+        },
+      },
     );
   }
 
