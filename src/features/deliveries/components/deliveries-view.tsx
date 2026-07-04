@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, PackageCheck, Plus } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -25,15 +25,13 @@ const FILTERS: { key: Filter; label: string }[] = [
 
 interface Props {
   initialData: DeliveryWithOrderCount[];
+  autoOpen?: boolean;
 }
 
-export function DeliveriesView({ initialData }: Props) {
+export function DeliveriesView({ initialData, autoOpen = false }: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { data: deliveries = [] } = useDeliveries(initialData);
-  const [sheetOpen, setSheetOpen] = useState(
-    () => searchParams.get("new") === "1",
-  );
+  const [sheetOpen, setSheetOpen] = useState(autoOpen);
   const [filter, setFilter] = useState<Filter>("all");
 
   const filtered =

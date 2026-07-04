@@ -6,9 +6,18 @@ import { DeliveriesView } from "@/features/deliveries/components/deliveries-view
 
 export const metadata: Metadata = { title: "Deliveries — SHE WAWA" };
 
-export default async function DeliveriesPage() {
+export default async function DeliveriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ new?: string }>;
+}) {
   const supabase = await createClient();
-  const deliveries = await getDeliveries(supabase);
+  const [deliveries, params] = await Promise.all([
+    getDeliveries(supabase),
+    searchParams,
+  ]);
 
-  return <DeliveriesView initialData={deliveries} />;
+  return (
+    <DeliveriesView initialData={deliveries} autoOpen={params.new === "1"} />
+  );
 }
