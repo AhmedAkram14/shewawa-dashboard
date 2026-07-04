@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowLeft, PackageCheck, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -29,8 +29,11 @@ interface Props {
 
 export function DeliveriesView({ initialData }: Props) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: deliveries = [] } = useDeliveries(initialData);
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(
+    () => searchParams.get("new") === "1",
+  );
   const [filter, setFilter] = useState<Filter>("all");
 
   const filtered =

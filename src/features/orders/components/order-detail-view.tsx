@@ -34,7 +34,7 @@ function getOrderRecommendations(order: OrderDetail): Recommendation[] {
       iconClass: "text-coral-dk",
       message: `${pendingUnassigned} line${pendingUnassigned !== 1 ? "s" : ""} in this order need${pendingUnassigned === 1 ? "s" : ""} to go to factory`,
       actionLabel: "Create Factory Order",
-      href: "/factory-orders",
+      href: "/factory-orders/new",
     });
   }
 
@@ -46,7 +46,7 @@ function getOrderRecommendations(order: OrderDetail): Recommendation[] {
       iconClass: "text-primary",
       message: "This order is packed and ready for delivery",
       actionLabel: "Create Delivery",
-      href: "/deliveries",
+      href: "/deliveries?new=1",
     });
   }
 
