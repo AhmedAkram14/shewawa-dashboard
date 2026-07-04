@@ -27,6 +27,13 @@ export function useCreateFactoryOrder() {
       toast.success("Factory order created", { id: ctx?.toastId });
       router.push(`/factory-orders/${factoryOrderId}`);
     },
-    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
+    onError: (err, _, ctx) => {
+      const message = err.message.includes(
+        "factory_orders_one_open_per_factory",
+      )
+        ? "This factory already has an open factory order. Close it first, or add these items to the existing order."
+        : err.message;
+      toast.error(message, { id: ctx?.toastId });
+    },
   });
 }
