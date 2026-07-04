@@ -1,14 +1,12 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
+import { signOut } from "@/app/(auth)/actions";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/use-user";
 import { isDemoUser } from "@/lib/demo";
 
 export function DemoBanner() {
   const { user, loading } = useUser();
-  const router = useRouter();
 
   if (loading || !isDemoUser(user?.email)) return null;
 
@@ -20,14 +18,16 @@ export function DemoBanner() {
           {" — "}
           Exploring SHE WAWA. Changes may be reset at any time.
         </p>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-7 shrink-0 text-xs font-medium text-coral-dk hover:bg-coral/10 hover:text-coral-dk"
-          onClick={() => router.push("/login")}
-        >
-          Sign in
-        </Button>
+        <form action={signOut}>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="sm"
+            className="h-7 shrink-0 text-xs font-medium text-coral-dk hover:bg-coral/10 hover:text-coral-dk"
+          >
+            Exit demo
+          </Button>
+        </form>
       </div>
     </div>
   );
