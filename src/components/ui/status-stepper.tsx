@@ -20,10 +20,8 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
     : steps.findIndex((s) => s.key === currentKey);
 
   const n = steps.length;
-  // Line runs between the centers of the first and last circles.
-  // Each step takes 1/n of the width; circle center is at the midpoint of that slot.
-  const lineStartPct = 100 / (2 * n); // % from left edge to first circle center
-  const lineWidthPct = 100 - 100 / n; // % width of the full line
+  const lineStartPct = 100 / (2 * n);
+  const lineWidthPct = 100 - 100 / n;
   const progressPct =
     isCancelled || currentIndex <= 0
       ? 0
@@ -31,53 +29,55 @@ export function StatusStepper({ steps, currentKey, cancelledKey }: Props) {
 
   return (
     <div className="space-y-3">
-      {/* Track + circles */}
       <div className="relative flex items-start">
-        {/* Full grey track */}
+        {/* Grey track */}
         <div
-          className="absolute top-4 h-0.5 bg-border"
+          className="absolute top-5 h-[3px] rounded-full bg-border"
           style={{ left: `${lineStartPct}%`, width: `${lineWidthPct}%` }}
         />
-        {/* Filled coral track */}
+        {/* Coral filled track */}
         <div
-          className="absolute top-4 h-0.5 bg-coral transition-all duration-500"
+          className="absolute top-5 h-[3px] rounded-full bg-coral transition-all duration-500"
           style={{ left: `${lineStartPct}%`, width: `${progressPct}%` }}
         />
 
         {steps.map((step, i) => {
           const isCompleted = !isCancelled && i < currentIndex;
           const isCurrent = !isCancelled && i === currentIndex;
+          const isUpcoming = isCancelled || i > currentIndex;
 
           return (
             <div
               key={step.key}
               className="relative z-10 flex flex-1 flex-col items-center gap-2"
             >
-              {/* Circle */}
+              {/* Rounded-square icon */}
               <div
                 className={cn(
-                  "flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300",
+                  "flex h-10 w-10 items-center justify-center rounded-2xl transition-all duration-300",
                   isCompleted && "bg-coral shadow-sm",
-                  isCurrent &&
-                    "bg-coral shadow-[0_0_0_4px_hsl(var(--c50))] ring-1 ring-coral/30",
-                  !isCompleted &&
-                    !isCurrent &&
-                    "border-2 border-border bg-background",
+                  isCurrent && "bg-coral shadow-lg",
+                  isUpcoming && "bg-muted",
                 )}
               >
                 {isCompleted && (
-                  <Check className="h-4 w-4 text-white" strokeWidth={2.5} />
+                  <Check className="h-5 w-5 text-white" strokeWidth={2.5} />
                 )}
-                {isCurrent && <div className="h-3 w-3 rounded-full bg-white" />}
+                {isCurrent && (
+                  <div className="h-3.5 w-3.5 rounded-md bg-white/90" />
+                )}
+                {isUpcoming && (
+                  <div className="h-3.5 w-3.5 rounded-md bg-muted-foreground/25" />
+                )}
               </div>
 
               {/* Label */}
               <p
                 className={cn(
-                  "text-center text-[11px] font-medium leading-tight",
-                  isCompleted || isCurrent
-                    ? "text-coral-dk"
-                    : "text-muted-foreground",
+                  "text-center text-xs leading-tight",
+                  isCompleted && "font-semibold text-coral-dk",
+                  isCurrent && "font-bold text-coral-dk",
+                  isUpcoming && "font-medium text-muted-foreground",
                 )}
               >
                 {step.label}
