@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { useCreateVariant } from "../hooks/use-product-mutations";
+import { friendlyError } from "@/lib/db-error";
 import { variantSchema } from "../schemas";
 
 interface Props {
@@ -56,7 +57,7 @@ export function AddVariantSheet({ open, onOpenChange, productId }: Props) {
         reset();
         onOpenChange(false);
       },
-      onError: (err) => setError(err.message),
+      onError: (err) => setError(friendlyError(err)),
     });
   }
 

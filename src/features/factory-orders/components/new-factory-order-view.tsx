@@ -20,6 +20,7 @@ import type { FactoryRow } from "@/features/factories/api/factories";
 
 import { usePendingOrderLines } from "../hooks/use-factory-orders";
 import { useCreateFactoryOrder } from "../hooks/use-create-factory-order";
+import { friendlyError } from "@/lib/db-error";
 import type { PendingOrderLine } from "../api/factory-orders";
 
 type VariantGroup = {
@@ -139,15 +140,7 @@ export function NewFactoryOrderView() {
         groups: groupsPayload,
       },
       {
-        onError: (err) => {
-          if (err.message.includes("factory_orders_one_open_per_factory")) {
-            setError(
-              "This factory already has an open factory order. Close it first, or add these items to the existing order.",
-            );
-          } else {
-            setError(err.message);
-          }
-        },
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

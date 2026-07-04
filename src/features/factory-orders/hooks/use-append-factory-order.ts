@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { friendlyError } from "@/lib/db-error";
 import { orderKeys } from "@/features/orders/hooks/use-orders";
 import { todayKeys } from "@/features/today/hooks/use-today-summary";
 
@@ -32,6 +33,7 @@ export function useAppendFactoryOrder(factoryOrderId: string) {
       queryClient.invalidateQueries({ queryKey: todayKeys.summary });
       toast.success("Orders added to factory order", { id: ctx?.toastId });
     },
-    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
+    onError: (err, _, ctx) =>
+      toast.error(friendlyError(err), { id: ctx?.toastId }),
   });
 }

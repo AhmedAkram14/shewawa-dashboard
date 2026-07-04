@@ -19,6 +19,7 @@ import type {
   FactoryOrderDetail,
   FactoryOrderLineDetail,
 } from "../api/factory-orders";
+import { friendlyError } from "@/lib/db-error";
 import { useRecordFactoryReceipts } from "../hooks/use-record-factory-receipts";
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -205,7 +206,7 @@ export function RecordReceiptSheet({ open, onOpenChange, fo }: Props) {
       },
       {
         onSuccess: () => onOpenChange(false),
-        onError: (err) => setSubmitError(err.message),
+        onError: (err) => setSubmitError(friendlyError(err)),
       },
     );
   }

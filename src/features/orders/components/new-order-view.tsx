@@ -22,6 +22,7 @@ import { useCreateOrder } from "../hooks/use-create-order";
 import { useCustomers } from "@/features/customers/hooks/use-customers";
 import { CustomerSheet } from "@/features/customers/components/customer-sheet";
 import type { CustomerRow } from "@/features/customers/api/customers";
+import { friendlyError } from "@/lib/db-error";
 import { LinePickerSheet } from "./line-picker-sheet";
 
 type DraftLine = {
@@ -108,7 +109,7 @@ export function NewOrderView() {
           unit_price,
         })),
       },
-      { onError: (err) => setError(err.message) },
+      { onError: (err) => setError(friendlyError(err)) },
     );
   }
 

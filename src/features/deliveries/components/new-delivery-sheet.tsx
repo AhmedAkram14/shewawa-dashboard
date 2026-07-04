@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { useReadyOrders } from "../hooks/use-deliveries";
+import { friendlyError } from "@/lib/db-error";
 import { useCreateDelivery } from "../hooks/use-create-delivery";
 
 interface Props {
@@ -55,7 +56,7 @@ export function NewDeliverySheet({ open, onOpenChange }: Props) {
     }
     mutation.mutate(
       { order_ids: Array.from(selected), notes: notes.trim() || null },
-      { onError: (err) => setError(err.message) },
+      { onError: (err) => setError(friendlyError(err)) },
     );
   }
 

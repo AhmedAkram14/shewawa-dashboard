@@ -14,6 +14,7 @@ import {
 import { formatPrice } from "@/lib/format";
 
 import type { OrderDetail } from "../api/orders";
+import { friendlyError } from "@/lib/db-error";
 import { useUpdateOrder } from "../hooks/use-update-order";
 
 interface Props {
@@ -61,7 +62,7 @@ export function EditOrderSheet({
       { deposit_amount: depositPiastres, notes: notes.trim() || null },
       {
         onSuccess: () => onOpenChange(false),
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

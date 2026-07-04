@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { useCreateProduct } from "../hooks/use-product-mutations";
+import { friendlyError } from "@/lib/db-error";
 import { createProductSchema } from "../schemas";
 
 interface Props {
@@ -49,7 +50,7 @@ export function AddProductSheet({ open, onOpenChange }: Props) {
         reset();
         onOpenChange(false);
       },
-      onError: (err) => setError(err.message),
+      onError: (err) => setError(friendlyError(err)),
     });
   }
 

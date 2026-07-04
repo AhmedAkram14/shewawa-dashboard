@@ -10,6 +10,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { friendlyError } from "@/lib/db-error";
 import { useRecordFactoryPayment } from "../hooks/use-record-factory-payment";
 
 interface Props {
@@ -61,7 +62,7 @@ export function RecordPaymentSheet({
           setPaidAt(new Date().toISOString().slice(0, 10));
           onOpenChange(false);
         },
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

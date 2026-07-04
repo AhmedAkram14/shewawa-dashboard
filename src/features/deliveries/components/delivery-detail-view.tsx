@@ -14,6 +14,7 @@ import type { DeliveryDetail } from "../api/deliveries";
 import { useDelivery } from "../hooks/use-deliveries";
 import { useDispatchDelivery } from "../hooks/use-dispatch-delivery";
 import { CompleteDeliverySheet } from "./complete-delivery-sheet";
+import { friendlyError } from "@/lib/db-error";
 import { DeliveryStatusBadge } from "./delivery-status-badge";
 
 interface Props {
@@ -53,7 +54,7 @@ export function DeliveryDetailView({ id, initialData }: Props) {
   function handleDispatch() {
     setDispatchError(null);
     dispatchMutation.mutate(undefined, {
-      onError: (err) => setDispatchError(err.message),
+      onError: (err) => setDispatchError(friendlyError(err)),
     });
   }
 

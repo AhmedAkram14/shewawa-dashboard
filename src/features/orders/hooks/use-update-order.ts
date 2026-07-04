@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { friendlyError } from "@/lib/db-error";
 
 import { callUpdateOrder } from "../api/orders";
 import { orderKeys } from "./use-orders";
@@ -20,6 +21,7 @@ export function useUpdateOrder(orderId: string) {
       queryClient.invalidateQueries({ queryKey: orderKeys.all });
       toast.success("Order updated", { id: ctx?.toastId });
     },
-    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
+    onError: (err, _, ctx) =>
+      toast.error(friendlyError(err), { id: ctx?.toastId }),
   });
 }

@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { friendlyError } from "@/lib/db-error";
 import { orderKeys } from "@/features/orders/hooks/use-orders";
 
 import { callRecordFactoryReceipts } from "../api/factory-orders";
@@ -37,6 +38,7 @@ export function useRecordFactoryReceipts(factoryOrderId: string) {
       queryClient.invalidateQueries({ queryKey: todayKeys.summary });
       toast.success("Factory receipts recorded", { id: ctx?.toastId });
     },
-    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
+    onError: (err, _, ctx) =>
+      toast.error(friendlyError(err), { id: ctx?.toastId }),
   });
 }

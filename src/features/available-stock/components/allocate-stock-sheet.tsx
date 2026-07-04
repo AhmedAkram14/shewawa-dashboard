@@ -18,6 +18,7 @@ import {
   getPendingLinesForVariant,
   type PendingOrderLineForVariant,
 } from "../api/available-stock";
+import { friendlyError } from "@/lib/db-error";
 import { useAllocateFromStock } from "../hooks/use-allocate-from-stock";
 
 interface Props {
@@ -75,7 +76,7 @@ export function AllocateStockSheet({ stock, onOpenChange }: Props) {
       { stock_id: stock.id, order_line_id: selectedLine, quantity: q },
       {
         onSuccess: () => onOpenChange(false),
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

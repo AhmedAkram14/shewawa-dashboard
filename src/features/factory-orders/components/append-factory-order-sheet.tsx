@@ -12,6 +12,7 @@ import {
 
 import { usePendingOrderLines } from "../hooks/use-factory-orders";
 import { useAppendFactoryOrder } from "../hooks/use-append-factory-order";
+import { friendlyError } from "@/lib/db-error";
 import type { PendingOrderLine } from "../api/factory-orders";
 
 interface Props {
@@ -103,7 +104,7 @@ export function AppendFactoryOrderSheet({
     }
     mutation.mutate(Array.from(selectedIds), {
       onSuccess: () => handleOpen(false),
-      onError: (err) => setError(err.message),
+      onError: (err) => setError(friendlyError(err)),
     });
   }
 

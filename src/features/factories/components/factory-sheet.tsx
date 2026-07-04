@@ -18,6 +18,7 @@ import {
   useUpdateFactory,
 } from "../hooks/use-factory-mutations";
 import { factorySchema } from "../schemas";
+import { friendlyError } from "@/lib/db-error";
 import type { FactoryRow } from "../api/factories";
 
 interface AddProps {
@@ -81,7 +82,7 @@ export function FactorySheet(props: Props) {
         if (mode === "add") reset();
         onOpenChange(false);
       },
-      onError: (err) => setError(err.message),
+      onError: (err) => setError(friendlyError(err)),
     });
   }
 

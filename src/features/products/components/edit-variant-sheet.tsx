@@ -20,6 +20,7 @@ import {
   useUpdateVariant,
 } from "../hooks/use-product-mutations";
 import { variantSchema } from "../schemas";
+import { friendlyError } from "@/lib/db-error";
 import type { Database } from "@/lib/supabase/database.types";
 
 type Variant = Database["public"]["Tables"]["product_variants"]["Row"];
@@ -74,7 +75,7 @@ export function EditVariantSheet({
       { id: variant.id, input: result.data },
       {
         onSuccess: () => onOpenChange(false),
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }
@@ -82,7 +83,7 @@ export function EditVariantSheet({
   function handleDelete() {
     remove.mutate(variant.id, {
       onSuccess: () => onOpenChange(false),
-      onError: (err) => setError(err.message),
+      onError: (err) => setError(friendlyError(err)),
     });
   }
 

@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sheet";
 
 import type { DeliveryOrderSummary } from "../api/deliveries";
+import { friendlyError } from "@/lib/db-error";
 import { useCompleteDelivery } from "../hooks/use-complete-delivery";
 
 interface Props {
@@ -94,7 +95,7 @@ export function CompleteDeliverySheet({
       { failedOrders },
       {
         onSuccess: () => handleOpen(false),
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

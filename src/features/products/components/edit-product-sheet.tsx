@@ -15,6 +15,7 @@ import {
 
 import { useUpdateProduct } from "../hooks/use-product-mutations";
 import { updateProductSchema } from "../schemas";
+import { friendlyError } from "@/lib/db-error";
 import type { ProductWithVariants } from "../api/products";
 
 interface Props {
@@ -52,7 +53,7 @@ export function EditProductSheet({ open, onOpenChange, product }: Props) {
       { name: result.data.name, description: result.data.description },
       {
         onSuccess: () => onOpenChange(false),
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

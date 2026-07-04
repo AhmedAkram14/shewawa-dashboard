@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { friendlyError } from "@/lib/db-error";
 import { orderKeys } from "@/features/orders/hooks/use-orders";
 import { todayKeys } from "@/features/today/hooks/use-today-summary";
 
@@ -27,6 +28,7 @@ export function useCreateDelivery() {
       toast.success("Delivery created", { id: ctx?.toastId });
       router.push(`/deliveries/${deliveryId}`);
     },
-    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
+    onError: (err, _, ctx) =>
+      toast.error(friendlyError(err), { id: ctx?.toastId }),
   });
 }

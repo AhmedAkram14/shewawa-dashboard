@@ -15,6 +15,7 @@ import { getProductsForPicker } from "@/features/orders/api/orders";
 import { createClient } from "@/lib/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
+import { friendlyError } from "@/lib/db-error";
 import { useAddManualStock } from "../hooks/use-add-manual-stock";
 
 interface Props {
@@ -66,7 +67,7 @@ export function AddStockSheet({ open, onOpenChange }: Props) {
       },
       {
         onSuccess: () => handleOpen(false),
-        onError: (err) => setError(err.message),
+        onError: (err) => setError(friendlyError(err)),
       },
     );
   }

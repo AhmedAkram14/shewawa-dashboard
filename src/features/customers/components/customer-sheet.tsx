@@ -18,6 +18,7 @@ import {
   useUpdateCustomer,
 } from "../hooks/use-customer-mutations";
 import { customerSchema } from "../schemas";
+import { friendlyError } from "@/lib/db-error";
 import type { CustomerRow } from "../api/customers";
 
 interface AddProps {
@@ -85,7 +86,7 @@ export function CustomerSheet(props: Props) {
         if (mode === "add") reset();
         onOpenChange(false);
       },
-      onError: (err) => setError(err.message),
+      onError: (err) => setError(friendlyError(err)),
     });
   }
 

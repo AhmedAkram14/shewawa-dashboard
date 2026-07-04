@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
+import { friendlyError } from "@/lib/db-error";
 import { todayKeys } from "@/features/today/hooks/use-today-summary";
 
 import { callCancelOrder } from "../api/orders";
@@ -24,6 +25,7 @@ export function useCancelOrder(orderId: string) {
       toast.success("Order cancelled", { id: ctx?.toastId });
       router.push("/orders");
     },
-    onError: (err, _, ctx) => toast.error(err.message, { id: ctx?.toastId }),
+    onError: (err, _, ctx) =>
+      toast.error(friendlyError(err), { id: ctx?.toastId }),
   });
 }
