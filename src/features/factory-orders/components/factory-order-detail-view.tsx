@@ -17,7 +17,6 @@ import type {
   FactoryOrderDetail,
   FactoryOrderLineDetail,
 } from "../api/factory-orders";
-import { StatusStepper } from "@/components/ui/status-stepper";
 import { FactoryOrderStatusBadge } from "./factory-order-status-badge";
 import { RecordReceiptSheet } from "./record-receipt-sheet";
 import { AppendFactoryOrderSheet } from "./append-factory-order-sheet";
@@ -100,15 +99,6 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
           <FactoryOrderStatusBadge status={fo.status} />
         </div>
       </div>
-
-      {/* Status stepper */}
-      <StatusStepper
-        steps={[
-          { key: "open", label: "Open" },
-          { key: "closed", label: "Closed" },
-        ]}
-        currentKey={fo.status}
-      />
 
       {/* Factory */}
       <section className="rounded-lg border p-3">
