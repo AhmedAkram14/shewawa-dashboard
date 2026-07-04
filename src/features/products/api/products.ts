@@ -51,10 +51,27 @@ export async function createProduct(
   return data;
 }
 
+export async function uploadProductImage(
+  supabase: DB,
+  productId: string,
+  file: File,
+): Promise<string> {
+  const ext = file.name.split(".").pop() ?? "jpg";
+  const path = `${productId}/cover.${ext}`;
+  const { error } = await supabase.storage
+    .from("product-images")
+    .upload(path, file, { upsert: true, contentType: file.type });
+  if (error) throw error;
+  const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+  return data.publicUrl;
+}
+
 export async function updateProduct(
   supabase: DB,
   id: string,
-  input: Partial<Pick<ProductRow, "name" | "description" | "is_active">>,
+  input: Partial<
+    Pick<ProductRow, "name" | "description" | "is_active" | "image_url">
+  >,
 ): Promise<ProductRow> {
   const { data, error } = await supabase
     .from("products")

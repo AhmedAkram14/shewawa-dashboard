@@ -10,6 +10,7 @@ import {
   deleteVariant,
   updateProduct,
   updateVariant,
+  uploadProductImage,
 } from "../api/products";
 import type {
   CreateProductInput,
@@ -21,11 +22,22 @@ import { productKeys } from "./use-products";
 export function useCreateProduct() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (input: CreateProductInput) =>
-      createProduct(createClient(), {
+    mutationFn: async (input: CreateProductInput & { imageFile?: File }) => {
+      const supabase = createClient();
+      const product = await createProduct(supabase, {
         name: input.name,
         description: input.description ?? null,
-      }),
+      });
+      if (input.imageFile) {
+        const imageUrl = await uploadProductImage(
+          supabase,
+          product.id,
+          input.imageFile,
+        );
+        await updateProduct(supabase, product.id, { image_url: imageUrl });
+      }
+      return product;
+    },
     onSuccess: () => qc.invalidateQueries({ queryKey: productKeys.all }),
   });
 }
@@ -33,11 +45,28 @@ export function useCreateProduct() {
 export function useUpdateProduct(productId: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (
+    mutationFn: async (
       input: Partial<Pick<UpdateProductInput, "name" | "description">> & {
         is_active?: boolean;
+        image_url?: string | null;
+        imageFile?: File;
       },
-    ) => updateProduct(createClient(), productId, input),
+    ) => {
+      const supabase = createClient();
+      const { imageFile, ...rest } = input;
+      if (imageFile) {
+        const imageUrl = await uploadProductImage(
+          supabase,
+          productId,
+          imageFile,
+        );
+        return updateProduct(supabase, productId, {
+          ...rest,
+          image_url: imageUrl,
+        });
+      }
+      return updateProduct(supabase, productId, rest);
+    },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: productKeys.all });
       qc.invalidateQueries({ queryKey: productKeys.detail(productId) });

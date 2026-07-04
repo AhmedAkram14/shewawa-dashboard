@@ -53,6 +53,17 @@ export function ProductDetailView({ id, initialData }: Props) {
         </Button>
       </div>
 
+      {/* Product image */}
+      {product.image_url && (
+        <div className="mb-4 overflow-hidden rounded-xl">
+          <img
+            src={product.image_url}
+            alt={product.name}
+            className="h-56 w-full object-cover"
+          />
+        </div>
+      )}
+
       {/* Product meta */}
       {product.description && (
         <p className="mb-3 text-sm text-muted-foreground">

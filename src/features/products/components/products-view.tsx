@@ -61,25 +61,40 @@ export function ProductsView({ initialData }: Props) {
               <li key={product.id}>
                 <Link
                   href={`/products/${product.id}`}
-                  className="block rounded-xl border bg-card p-4 transition-all hover:border-primary/20 hover:shadow-sm active:bg-accent"
+                  className="block rounded-xl border bg-card transition-all hover:border-primary/20 hover:shadow-sm active:bg-accent"
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold">{product.name}</span>
-                    {!product.is_active && (
-                      <Badge variant="secondary">Inactive</Badge>
-                    )}
-                  </div>
-                  <div className="mt-3 flex items-center justify-between gap-2 border-t pt-3 text-sm text-muted-foreground">
-                    {variants.length > 0 ? (
-                      <span>{variants.map((v) => v.name).join(" · ")}</span>
-                    ) : (
-                      <span className="italic">No variants yet</span>
-                    )}
-                    {priceStr && (
-                      <span className="shrink-0 font-medium text-foreground">
-                        {priceStr}
-                      </span>
-                    )}
+                  <div className="flex gap-3 p-4">
+                    {/* Thumbnail */}
+                    {product.image_url ? (
+                      <img
+                        src={product.image_url}
+                        alt={product.name}
+                        className="h-16 w-16 shrink-0 rounded-lg object-cover"
+                      />
+                    ) : null}
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-semibold">{product.name}</span>
+                        {!product.is_active && (
+                          <Badge variant="secondary">Inactive</Badge>
+                        )}
+                      </div>
+                      <div className="mt-3 flex items-center justify-between gap-2 border-t pt-3 text-sm text-muted-foreground">
+                        {variants.length > 0 ? (
+                          <span className="truncate">
+                            {variants.map((v) => v.name).join(" · ")}
+                          </span>
+                        ) : (
+                          <span className="italic">No variants yet</span>
+                        )}
+                        {priceStr && (
+                          <span className="shrink-0 font-medium text-foreground">
+                            {priceStr}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </Link>
               </li>
