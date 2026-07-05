@@ -320,8 +320,17 @@ export function NewOrderView() {
         onNewProduct={() => setAddProductOpen(true)}
       />
 
-      {/* New product sheet */}
-      <AddProductSheet open={addProductOpen} onOpenChange={setAddProductOpen} />
+      {/* New product sheet — two-step mode: creates product then variant, auto-adds to order */}
+      <AddProductSheet
+        open={addProductOpen}
+        onOpenChange={(o) => {
+          setAddProductOpen(o);
+          if (!o) setPickerOpen(true);
+        }}
+        onVariantAdded={(variantId, sellingPrice, vName, pName) => {
+          addOrMergeLine(variantId, 1, sellingPrice, vName, pName);
+        }}
+      />
     </div>
   );
 }
