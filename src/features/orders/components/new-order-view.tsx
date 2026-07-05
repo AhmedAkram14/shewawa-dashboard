@@ -24,6 +24,7 @@ import { CustomerSheet } from "@/features/customers/components/customer-sheet";
 import type { CustomerRow } from "@/features/customers/api/customers";
 import { friendlyError } from "@/lib/db-error";
 import { LinePickerSheet } from "./line-picker-sheet";
+import { AddProductSheet } from "@/features/products/components/add-product-sheet";
 
 type DraftLine = {
   product_variant_id: string;
@@ -44,11 +45,12 @@ export function NewOrderView() {
   const [customerPickerOpen, setCustomerPickerOpen] = useState(false);
   const [customerSheetOpen, setCustomerSheetOpen] = useState(false);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [addProductOpen, setAddProductOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { data: customers = [] } = useCustomers();
   const { data: products = [] } = useQuery({
-    queryKey: ["products-for-picker"],
+    queryKey: ["products", "picker"],
     queryFn: () => getProductsForPicker(createClient()),
   });
   const createOrder = useCreateOrder();
@@ -315,7 +317,11 @@ export function NewOrderView() {
         onOpenChange={setPickerOpen}
         products={products}
         onAdd={addOrMergeLine}
+        onNewProduct={() => setAddProductOpen(true)}
       />
+
+      {/* New product sheet */}
+      <AddProductSheet open={addProductOpen} onOpenChange={setAddProductOpen} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,7 @@ interface Props {
     variantName: string,
     productName: string,
   ) => void;
+  onNewProduct: () => void;
 }
 
 type Stage = "product" | "variant";
@@ -36,6 +37,7 @@ export function LinePickerSheet({
   onOpenChange,
   products,
   onAdd,
+  onNewProduct,
 }: Props) {
   const [stage, setStage] = useState<Stage>("product");
   const [selectedProduct, setSelectedProduct] =
@@ -80,29 +82,44 @@ export function LinePickerSheet({
         </SheetHeader>
 
         {stage === "product" ? (
-          <ul className="divide-y px-4">
-            {products.length === 0 && (
-              <li className="py-8 text-center text-sm text-muted-foreground">
-                No active products
-              </li>
-            )}
-            {products.map((product) => (
-              <li key={product.id}>
-                <button
-                  onClick={() => handleSelectProduct(product)}
-                  className="flex w-full items-center justify-between py-3 text-left transition-colors hover:text-foreground"
-                >
-                  <span className="font-medium">{product.name}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {product.product_variants.length}{" "}
-                    {product.product_variants.length === 1
-                      ? "variant"
-                      : "variants"}
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
+          <>
+            <div className="px-4 pb-2">
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  onOpenChange(false);
+                  onNewProduct();
+                }}
+              >
+                <Plus />
+                New Product
+              </Button>
+            </div>
+            <ul className="divide-y px-4">
+              {products.length === 0 && (
+                <li className="py-8 text-center text-sm text-muted-foreground">
+                  No active products yet
+                </li>
+              )}
+              {products.map((product) => (
+                <li key={product.id}>
+                  <button
+                    onClick={() => handleSelectProduct(product)}
+                    className="flex w-full items-center justify-between py-3 text-left transition-colors hover:text-foreground"
+                  >
+                    <span className="font-medium">{product.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {product.product_variants.length}{" "}
+                      {product.product_variants.length === 1
+                        ? "variant"
+                        : "variants"}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
         ) : (
           <div className="flex flex-col gap-4 px-4">
             <button
