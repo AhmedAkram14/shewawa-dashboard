@@ -52,6 +52,7 @@ export type FactoryOrderLineDetail = FactoryOrderLineRow & {
   product_variants: {
     id: string;
     name: string;
+    cost_price: number | null;
     products: { id: string; name: string };
   };
   factory_receipts: ReceiptRecord[];
@@ -112,7 +113,7 @@ export async function getFactoryOrder(
       factory_payments(id, amount, paid_at, reference, notes, created_at),
       factory_order_lines(
         *,
-        product_variants(id, name, products(id, name)),
+        product_variants(id, name, cost_price, products(id, name)),
         factory_receipts(id, quantity, received_at, reversal_of, notes),
         order_lines(id, order_id, quantity, allocated_quantity, status,
           orders(order_number, created_at, status, customers(name)))

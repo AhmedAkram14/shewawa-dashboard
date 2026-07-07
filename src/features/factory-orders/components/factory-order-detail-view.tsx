@@ -1,12 +1,11 @@
 "use client";
 
-import { ArrowLeft, Banknote, Pencil } from "lucide-react";
+import { ArrowLeft, Banknote } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
 import { Truck } from "lucide-react";
@@ -58,85 +57,6 @@ function totalReceivedForLine(fol: FactoryOrderLineDetail): number {
     .reduce((s, r) => s + r.quantity, 0);
 }
 
-function InlineCostEditor({
-  line,
-  factoryOrderId,
-}: {
-  line: FactoryOrderLineDetail;
-  factoryOrderId: string;
-}) {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(
-    line.unit_cost != null ? (line.unit_cost / 100).toFixed(2) : "",
-  );
-  const inputRef = useRef<HTMLInputElement>(null);
-  const setLineCost = useSetFactoryLineCost(factoryOrderId);
-
-  function startEditing() {
-    setEditing(true);
-    setValue(line.unit_cost != null ? (line.unit_cost / 100).toFixed(2) : "");
-    setTimeout(() => inputRef.current?.select(), 0);
-  }
-
-  function commit() {
-    const parsed = parseFloat(value);
-    const piastres =
-      isNaN(parsed) || parsed <= 0 ? null : Math.round(parsed * 100);
-    setLineCost.mutate(
-      { line_id: line.id, unit_cost: piastres },
-      { onSuccess: () => setEditing(false), onError: () => setEditing(false) },
-    );
-  }
-
-  function handleKey(e: React.KeyboardEvent) {
-    if (e.key === "Enter") commit();
-    if (e.key === "Escape") setEditing(false);
-  }
-
-  if (editing) {
-    return (
-      <div className="mt-1.5 flex items-center gap-2">
-        <span className="text-xs text-muted-foreground">EGP</span>
-        <Input
-          ref={inputRef}
-          inputMode="decimal"
-          placeholder="0.00"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={handleKey}
-          onBlur={commit}
-          className="h-7 w-24 text-xs"
-          autoFocus
-        />
-        <span className="text-xs text-muted-foreground">/pc</span>
-      </div>
-    );
-  }
-
-  if (line.unit_cost != null) {
-    return (
-      <button
-        onClick={startEditing}
-        className="mt-1.5 flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-      >
-        EGP {formatPrice(line.unit_cost)}/pc · total EGP{" "}
-        {formatPrice(line.unit_cost * line.quantity)}
-        <Pencil className="h-3 w-3 opacity-50" />
-      </button>
-    );
-  }
-
-  return (
-    <button
-      onClick={startEditing}
-      className="mt-1.5 flex items-center gap-1 text-xs text-warn-tx hover:text-foreground"
-    >
-      <Pencil className="h-3 w-3" />
-      Set cost price
-    </button>
-  );
-}
-
 interface Props {
   id: string;
   initialData: FactoryOrderDetail;
@@ -148,6 +68,21 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
   const [receiptOpen, setReceiptOpen] = useState(false);
   const [appendOpen, setAppendOpen] = useState(false);
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const setLineCost = useSetFactoryLineCost(id);
+
+  // Auto-fill unit_cost from the variant's cost_price for any line missing it
+  useEffect(() => {
+    if (!fo) return;
+    fo.factory_order_lines.forEach((line) => {
+      if (line.unit_cost === null && line.product_variants.cost_price) {
+        setLineCost.mutate({
+          line_id: line.id,
+          unit_cost: line.product_variants.cost_price,
+        });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fo?.id]);
 
   if (!fo) return null;
 
@@ -237,7 +172,12 @@ export function FactoryOrderDetailView({ id, initialData }: Props) {
                   {!isComplete && <span>Remaining: {remaining}</span>}
                 </div>
 
-                <InlineCostEditor line={line} factoryOrderId={fo.id} />
+                {line.unit_cost != null && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    EGP {formatPrice(line.unit_cost)}/pc · total EGP{" "}
+                    {formatPrice(line.unit_cost * line.quantity)}
+                  </p>
+                )}
 
                 {activeReceipts.length > 0 && (
                   <ul className="mt-2 space-y-0.5">
