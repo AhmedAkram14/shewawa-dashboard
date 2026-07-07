@@ -59,7 +59,7 @@ export function ProductDetailView({ id, initialData }: Props) {
           <img
             src={product.image_url}
             alt={product.name}
-            className="h-56 w-full object-cover"
+            className="h-auto w-full"
           />
         </div>
       )}
